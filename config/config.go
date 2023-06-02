@@ -1,6 +1,11 @@
 package config
 
-import "sync"
+import (
+	"log"
+	"os"
+	"strconv"
+	"sync"
+)
 
 type AppConfig struct {
 	SERVER_PORT		int
@@ -8,7 +13,7 @@ type AppConfig struct {
 	DB_USERNAME		string
 	DB_PASSWORD		string
 	DB_HOST			string
-	DB_PORT			string
+	DB_PORT			int
 	DB_NAME			string
 }
 
@@ -26,5 +31,22 @@ func GetConfig() *AppConfig {
 }
 
 func initConfig() *AppConfig {
-	return *&appConfig
+	var defaultConfig AppConfig
+
+	serverPortConv, errConv := strconv.Atoi(os.Getenv("SERVER_PORT"))
+	if errConv != nil {
+		log.Fatal("error Parse DB Server Port")
+		return nil
+	}
+	defaultConfig.SERVER_PORT = serverPortConv
+	defaultConfig.DB_NAME = os.Getenv("DB_NAME")
+	defaultConfig.DB_USERNAME = os.Getenv("DB_USERNAME")
+	defaultConfig.DB_PASSWORD = os.Getenv("DB_HOST")
+	dbPortConv, errConv := strconv.Atoi(os.Getenv("DB_PORT"))
+	if errConv != nil {
+		log.Fatal("error parse DB PORT")
+	}
+	defaultConfig.DB_PORT = dbPortConv
+
+	return &defaultConfig
 }
