@@ -3,7 +3,8 @@ package middlewares
 import (
 	"time"
 
-	"github.com/golang-jwt/jwt"
+
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/iqbalpradipta/BalPay/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -11,10 +12,11 @@ import (
 
 func JWTMiddleware() echo.MiddlewareFunc {
 	return middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningMethod: "HS256",
+		SigningMethod: middleware.AlgorithmHS256,
 		SigningKey:    []byte(config.SECRET_JWT),
 	})
 }
+
 
 func CreateToken(id int, role string) (string, error) {
 	claims := jwt.MapClaims{}
