@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func isAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+func IsAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		_, role := ExtractToken(c)
 		if role != "admin" {
@@ -17,7 +17,7 @@ func isAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func isMember(next echo.HandlerFunc) echo.HandlerFunc {
+func IsMember(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		_, role := ExtractToken(c)
 		if role != "member" {

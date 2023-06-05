@@ -3,8 +3,7 @@ package middlewares
 import (
 	"time"
 
-
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt"
 	"github.com/iqbalpradipta/BalPay/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
