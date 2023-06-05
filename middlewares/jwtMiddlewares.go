@@ -1,11 +1,10 @@
 package middlewares
 
 import (
-	"strings"
 	"time"
 
-	"github.com/iqbalpradipta/BalPay/config"
 	"github.com/golang-jwt/jwt"
+	"github.com/iqbalpradipta/BalPay/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -17,28 +16,25 @@ func JWTMiddleware() echo.MiddlewareFunc {
 	})
 }
 
-func CreateToken(userId int) (string, error) {
+func CreateToken(id int, role string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["userId"] = userId
-	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
+	claims["id"] = id
+	claims["role"] = role
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(config.SECRET_JWT))
 }
 
-func ExtractToken(c echo.Context) int {
-	headerData := c.Request().Header.Get("Authorization")
-	dataAuth := strings.Split(headerData, " ")
-	token := dataAuth[len(dataAuth)-1]
-	datajwt, _ := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		return []byte(config.SECRET_JWT), nil
-	})
+func ExtractToken(c echo.Context) (int, string) {
+	user := c.Get("user").(*jwt.Token)
 
-	if datajwt.Valid {
-		claims := datajwt.Claims.(jwt.MapClaims)
-		userId := claims["userId"].(float64)
-		return int(userId)
+	if user.Valid{
+		claims := user.Claims.(jwt.MapClaims)
+		id := claims["id"].(float64)
+		role := claims["role"].(string)
+		return int(id), role
 	}
 
-	return -1
+	return 0, ""
 }
