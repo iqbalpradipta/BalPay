@@ -2,12 +2,10 @@ package user
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Core struct {
-	ID			uuid.UUID
+	ID			uint
 	Name		string
 	Username	string
 	Email		string
@@ -19,7 +17,7 @@ type Core struct {
 }
 
 type AccountCore struct  {
-	ID			uuid.UUID
+	ID			uint
 	Balance		uint
 	CreatedAt	time.Time
 }
