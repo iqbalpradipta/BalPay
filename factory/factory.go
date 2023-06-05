@@ -6,5 +6,5 @@ import (
 )
 
 func InitFactory(e *echo.Echo, db *gorm.DB)  {
-
+	
 }
