@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/iqbalpradipta/BalPay/features/user"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userUseCase struct {
@@ -30,9 +31,18 @@ func (u *userUseCase) GetUserById(id int) (data user.Core, err error) {
 }
 
 func (u *userUseCase) CreateData(data user.Core) (int, error) {
+	passBcrypt := []byte(data.Password)
+	hash, errHash := bcrypt.GenerateFromPassword(passBcrypt, bcrypt.DefaultCost)
+	if errHash != nil {
+		return -2, errors.New("failed to hashing password")
+	}
 	if data.Name == ""{
 		return -1, errors.New("name must be fill")
 	}
+	if data.Password == "" {
+		return -1, errors.New("password must be fill")
+	}
+	data.Password = string(hash)
 	row, err := u.userData.InsertData(data)
 	return row, err
 }

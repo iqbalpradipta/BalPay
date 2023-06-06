@@ -9,15 +9,6 @@ type UserRequest struct {
 	Password	string	`json:"password" form:"password"`
 }
 
-func fromCoreRequest(dataCore UserRequest) user.Core {
-	return user.Core{
-		Name: dataCore.Name,
-		Username: dataCore.Name,
-		Email: dataCore.Email,
-		Password: dataCore.Password,
-	}
-}
-
 func toCore(data UserRequest) user.Core {
 	return user.Core{
 		Name: data.Name,
