@@ -34,9 +34,9 @@ func (repo *userData) SelectDataById(id int) (user.Core, error) {
 	if tx.Error != nil {
 		return user.Core{}, tx.Error
 	}
-	dataCore := fromCore(user.Core{})
-	return dataCore.toCore(), nil
+	return data.toCore(), nil
 }
+
 
 func (repo *userData) InsertData(data user.Core) (int, error){
 	dataModel := fromCore(data)
@@ -54,10 +54,11 @@ func (repo *userData) PostData(id int, updatedData user.Core) (int, error) {
 	}
 
 	if tx.RowsAffected == 0 {
-		return 0, errors.New("failed to update data")
+		return 0, errors.New("no data updated")
 	}
 	return int(tx.RowsAffected), nil
 }
+
 func (repo *userData) DelData(id int, deletedData user.Core) (int, error) {
 	tx := repo.db.Where("id = ?", id).Delete(&User{})
 	if tx.Error != nil {

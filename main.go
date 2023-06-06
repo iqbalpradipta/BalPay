@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/iqbalpradipta/BalPay/config"
 	"github.com/iqbalpradipta/BalPay/factory"
 	"github.com/iqbalpradipta/BalPay/migration"
 	"github.com/iqbalpradipta/BalPay/utils/database/postgresql"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -24,6 +26,12 @@ func (cv *CustomValidation) Validate(i interface{}) error {
 }
 
 func main()  {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Gagal memuat file .env")
+	}
+
 	cfg := config.GetConfig()
 	db := postgresql.InitDB(cfg)
 	e := echo.New()
@@ -39,5 +47,8 @@ func main()  {
 	e.Use(middleware.Recover())
 	migration.InitMigrate(db)
 	factory.InitFactory(e, db)
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.SERVER_PORT)))
+	err = e.Start(fmt.Sprintf(":%d", cfg.SERVER_PORT))
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
 }

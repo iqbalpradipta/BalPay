@@ -10,7 +10,13 @@ import (
 )
 
 func InitDB(cfg *config.AppConfig) *gorm.DB {
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", cfg.DB_USERNAME, cfg.DB_PASSWORD, cfg.DB_HOST, cfg.DB_PORT, cfg.DB_NAME)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+	cfg.DB_HOST,
+	cfg.DB_PORT,
+	cfg.DB_USERNAME,
+	cfg.DB_PASSWORD,
+	cfg.DB_NAME,
+	)
 	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 	if err != nil {
 		log.Fatal("error connect to DB", err)

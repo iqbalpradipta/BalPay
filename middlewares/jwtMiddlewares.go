@@ -11,10 +11,11 @@ import (
 
 func JWTMiddleware() echo.MiddlewareFunc {
 	return middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningMethod: middleware.AlgorithmHS256,
+		SigningMethod: jwt.SigningMethodHS256.Name,
 		SigningKey:    []byte(config.SECRET_JWT),
 	})
 }
+
 
 
 func CreateToken(id int, role string) (string, error) {

@@ -3,15 +3,14 @@ package delivery
 import "github.com/iqbalpradipta/BalPay/features/user"
 
 type userRespon struct {
-	ID		uint	`json:"id"`
 	Name	string	`json:"name"`
 	Email	string	`json:"email,omitempty"`
 	Role	string 	`json:"role"`
+	Token	string	`json:"token"`
 }
 
 func fromCore(data user.Core) userRespon {
 	return userRespon{
-		ID:		data.ID,
 		Name:	data.Name,
 		Email:	data.Email,
 		Role:	data.Role,
@@ -26,11 +25,11 @@ func fromCoreList(data []user.Core) []userRespon {
 	return dataResponse
 }
 
-func fromCoreToResponse(dataCore user.Core) userRespon {
+func fromCoreToResponse(name, role, token string) userRespon {
 	dataResponse := userRespon {
-		Name: dataCore.Name,
-		Email: dataCore.Email,
-		Role: dataCore.Role,
+		Name: name,
+		Role: role,
+		Token: token,
 	}
 	return dataResponse
 }

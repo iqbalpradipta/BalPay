@@ -21,9 +21,10 @@ func NewHandler(e *echo.Echo, useCase user.IusecaseInterface) {
 
 	e.GET("/user", handler.GetUser, middlewares.JWTMiddleware())
 	e.GET("/user/:id", handler.GetUserById, middlewares.JWTMiddleware())
-	e.PUT("/user", handler.UpdateData, middlewares.JWTMiddleware(), middlewares.IsMember, middlewares.IsAdmin)
-	e.POST("/user", handler.CreateData, middlewares.JWTMiddleware())
+	e.PUT("/user", handler.UpdateData, middlewares.JWTMiddleware(), middlewares.IsAdmin)
+	e.POST("/user", handler.CreateData)
 	e.DELETE("user/:id", handler.CreateData, middlewares.JWTMiddleware(), middlewares.IsAdmin)
+	e.POST("/login", handler.LoginData)
 }
 
 func (d *UserDelivery) GetUser(c echo.Context) error {
@@ -45,7 +46,7 @@ func (d *UserDelivery) GetUserById(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("error get data"))
 	}
-	return c.JSON(http.StatusOK, helper.SuccessResponseDataHelper("get data success", fromCoreToResponse(result)))
+	return c.JSON(http.StatusOK, helper.SuccessResponseDataHelper("get data success", result))
 }
 
 func (d *UserDelivery) CreateData(c echo.Context) error {
@@ -65,18 +66,25 @@ func (d *UserDelivery) CreateData(c echo.Context) error {
 }
 
 func (d *UserDelivery) UpdateData(c echo.Context) error {
-	idToken, _  := middlewares.ExtractToken(c)
+	idToken, _ := middlewares.ExtractToken(c)
 	var dataUpdate UserRequest
 	errBind := c.Bind(&dataUpdate)
 	if errBind != nil {
 		return c.JSON(http.StatusBadRequest, helper.FailedResponseHelper("error request"))
 	}
 	row, err := d.UserUsecase.UpdateData(idToken, toCore(dataUpdate))
-	if err != nil || row == 0{
-		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("error get data"))
+	if err != nil {
+		if err.Error() == "no data updated" {
+			return c.JSON(http.StatusBadRequest, helper.FailedResponseHelper("no data updated"))
+		}
+		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("error updating data"))
+	}
+	if row == 0 {
+		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("no data updated"))
 	}
 	return c.JSON(http.StatusOK, helper.SuccessResponseHelper("update data success"))
 }
+
 
 func (d *UserDelivery) DeleteData(c echo.Context) error {
 	idToken, _ := middlewares.ExtractToken(c)
@@ -87,4 +95,19 @@ func (d *UserDelivery) DeleteData(c echo.Context) error {
 	}
 	return c.JSON(200, helper.SuccessResponseHelper("success delete data"))
 	
+}
+
+func (d *UserDelivery) LoginData(c echo.Context) error {
+	var data UserRequest
+
+	errBind := c.Bind(&data)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, helper.FailedResponseHelper("Invalid request data"))
+	}
+
+	str, role, username := d.UserUsecase.LoginData(data.Email, data.Password)
+	if str == "" && role != "" && username != "" {
+		return c.JSON(http.StatusBadRequest, helper.FailedResponseHelper(str))
+	}
+	return c.JSON(http.StatusOK, helper.SuccessResponseDataHelper("Login success", fromCoreToResponse(username, role, str)))
 }

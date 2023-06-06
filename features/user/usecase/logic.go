@@ -24,12 +24,14 @@ func (u *userUseCase) GetUser() ([]user.Core, error) {
 }
 
 func (u *userUseCase) GetUserById(id int) (data user.Core, err error) {
-	if data.ID == 0 {
-		return data, errors.New("id not found")
+	data, err = u.userData.SelectDataById(id)
+	if err != nil {
+		return data, err
 	}
-	result, err := u.userData.SelectDataById(id)
-	return result, err
+	return data, nil
 }
+
+
 
 func (u *userUseCase) CreateData(data user.Core) (int, error) {
 	passBcrypt := []byte(data.Password)
