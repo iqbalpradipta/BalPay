@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/iqbalpradipta/BalPay/features/user"
+	"github.com/iqbalpradipta/BalPay/middlewares"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -61,4 +62,26 @@ func (u *userUseCase) DeleteData(id int, deleteData user.Core) (int, error) {
 	}
 	row, err := u.userData.DelData(id, deleteData)
 	return row, err
+}
+
+func (u *userUseCase) LoginData(email, password string) (string, string, string) {
+	if email == "" || password == "" {
+		return "please input email and password", "", ""
+	}
+	row, errEmail := u.userData.AuthData(email)
+	if errEmail != nil {
+		return "email not found", "", ""
+	}
+
+	errAuth := bcrypt.CompareHashAndPassword([]byte(row.Password), []byte(password))
+	if errAuth != nil {
+		return "wrong Password", "", ""
+	}
+
+	token, errToken := middlewares.CreateToken(int(row.ID), row.Role)
+
+	if errToken != nil {
+		return "error to Create Token", "", ""
+	}
+	return token, row.Role, row.Username
 }

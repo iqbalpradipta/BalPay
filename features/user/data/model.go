@@ -31,6 +31,7 @@ func (data *User) toCore() user.Core {
 		Username: data.Username,
 		Email: data.Email,
 		Password: data.Password,
+		Role: data.Role,
 	}
 }
 

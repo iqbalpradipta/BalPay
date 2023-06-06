@@ -68,3 +68,18 @@ func (repo *userData) DelData(id int, deletedData user.Core) (int, error) {
 	}
 	return int(tx.RowsAffected), nil
 }
+
+func (repo *userData) AuthData(email string) (user.Core, error) {
+	var data User
+	tx := repo.db.Model(&User{}).Where("email = ?", email).First(&data)
+	if tx.Error != nil {
+		return user.Core{}, tx.Error
+	}
+
+	if tx.RowsAffected != 1 {
+		return user.Core{}, tx.Error
+	}
+	var dataUser = data.toCore()
+
+	return dataUser, nil
+}

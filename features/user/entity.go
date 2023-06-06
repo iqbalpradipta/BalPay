@@ -28,6 +28,7 @@ type IusecaseInterface interface {
 	CreateData(data Core) (row int, err error)
 	UpdateData(id int, updateData Core) (int , error)
 	DeleteData(id int, deleteData Core) (int, error) 
+	LoginData(email, password string) (string, string, string)
 }
 
 type IdataInterface	interface {
@@ -36,6 +37,7 @@ type IdataInterface	interface {
 	InsertData(data Core) (row int, err error)
 	PostData(id int, updatedData Core) (int ,error)
 	DelData(id int, deletedData Core) (int, error)
+	AuthData(email string) (Core, error)
 }
 
 type AuthRequest struct {
