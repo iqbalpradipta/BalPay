@@ -20,6 +20,7 @@ model Users {
   password    String
   phoneNumber String
   role        String        @default("member")
+  photoProfile String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   transaction Transaction[]

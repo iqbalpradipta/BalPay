@@ -61,29 +61,35 @@ export default new (class AuthServices {
     try {
       const user = await prisma.users.findFirst({
         where: {
-          email,
+          email: email,
         },
       });
 
-      const payload = {
-        id: user?.id,
-        name: user?.name,
-        email: user?.email,
-        phoneNumber: user?.phoneNumber,
-        role: user?.role
-      };
+      if(!user) {
+        return {
+          status: "Failed",
+          messages: `User with email ${email} is not found`
+        }
+      }
 
       const passwordCompare = bcrypt.compareSync(
         password,
-        user?.password as string
+        user.password
       );
 
-      if (user?.email !== email && !passwordCompare) {
+      if (!passwordCompare) {
         return {
           status: "Failed",
           messages: "email/password is wrong !",
         };
       } else {
+        const payload = {
+          id: user?.id,
+          name: user?.name,
+          email: user?.email,
+          phoneNumber: user?.phoneNumber,
+          role: user?.role,
+        };
         const token = jwt.sign(payload, `${process.env.SECRET_KEY_JWT}`, {
           expiresIn: "24h",
         });

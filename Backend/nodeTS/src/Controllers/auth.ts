@@ -10,7 +10,7 @@ export default new (class AuthController {
       const response = await AuthService.Register(data);
 
       if (response.status === "Failed") {
-        res.status(401).json(response);
+        res.status(400).json(response);
       } else {
         res.status(200).json(response);
       }
@@ -27,7 +27,7 @@ export default new (class AuthController {
       const response = await AuthService.RegisterAdmin(data);
 
       if (response.status === "Failed") {
-        res.status(401).json(response);
+        res.status(400).json(response);
       } else {
         res.status(200).json(response);
       }
