@@ -14,22 +14,23 @@ datasource db {
 }
 
 model Users {
-  id          Int           @id @default(autoincrement())
-  name        String
-  email       String
-  password    String
-  phoneNumber String
-  role        String        @default("member")
-  photoProfile String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  transaction Transaction[]
+  id            Int           @id @default(autoincrement())
+  name          String
+  email         String
+  password      String
+  phoneNumber   String
+  role          String        @default("member")
+  photoProfile  String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  transaction   Transaction[]
 }
 
 model Games {
   id          Int           @id @default(autoincrement())
   name        String
   description String
+  icon        String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   gameProduct GameProduct[]
@@ -40,6 +41,7 @@ model GameProduct {
   id          Int           @id @default(autoincrement())
   name        String
   price       Float
+  image       String[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   gameId      Int
@@ -48,27 +50,27 @@ model GameProduct {
 }
 
 model Transaction {
-  id            Int                 @id @default(autoincrement())
-  status        String
-  amount        Float
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-  userId        Int
-  gameId        Int
-  gameProductId Int
-  users         Users               @relation(fields: [userId], references: [id])
-  games         Games               @relation(fields: [gameId], references: [id])
-  gameProduct   GameProduct         @relation(fields: [gameProductId], references: [id])
-  transactionPayment TransactionPayment[]
+  id                  Int                 @id @default(autoincrement())
+  status              String
+  amount              Float
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  userId              Int
+  gameId              Int
+  gameProductId       Int
+  users               Users               @relation(fields: [userId], references: [id])
+  games               Games               @relation(fields: [gameId], references: [id])
+  gameProduct         GameProduct         @relation(fields: [gameProductId], references: [id])
+  transactionPayment  TransactionPayment[]
 }
 
 model PaymentMethod {
-  id                Int             @id @default(autoincrement())
-  name              String
-  description       String
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  transactionPayment TransactionPayment[]
+  id                  Int             @id @default(autoincrement())
+  name                String
+  description         String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  transactionPayment  TransactionPayment[]
 }
 
 model TransactionPayment {

@@ -62,7 +62,6 @@ export default new class UserServices {
 
     async UpdateUser(id: number, data: object) {
         try {
-
             const user = await prisma.users.update({
                 where: {
                     id: id
