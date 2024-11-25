@@ -26,6 +26,37 @@ export async function UploadToDropbox(
   }
 }
 
+export async function UploadToDropboxArray(
+  localFilePaths: string[],
+  dropboxPaths: string[]
+): Promise<void> {
+  if (localFilePaths.length !== dropboxPaths.length) {
+    throw new Error("The number of local file paths must match the number of Dropbox paths.");
+  }
+
+  try {
+    await refreshToken();
+
+    for (let i = 0; i < localFilePaths.length; i++) {
+      const fileContent = fs.readFileSync(localFilePaths[i]);
+
+      await dbx.filesUpload({
+        path: dropboxPaths[i],
+        contents: fileContent,
+        mode: { ".tag": "overwrite" },
+      });
+
+      console.log(`File uploaded to Dropbox: ${dropboxPaths[i]}`);
+
+      fs.unlinkSync(localFilePaths[i]);
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
 export const getDropboxSharedLink = async (
   dropboxPath: string
 ): Promise<string> => {
