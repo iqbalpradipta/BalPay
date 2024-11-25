@@ -41,16 +41,18 @@ export default new (class UserControllers {
         email: req.body.email,
         password: req.body.password,
         phoneNumber: req.body.phoneNumber,
-        photoProfile: `${req.file?.path}`,
+        photoProfile: req.file?.path as string,
       };
 
-      if (!data.photoProfile) {
-        res.status(400).json({ messages: "Image not detected" });
-        return;
-      } else {
-        await UploadToDropbox(data.photoProfile, pathFile);
-        const getLinkFromDbx = await getDropboxSharedLink(pathFile);
-        data.photoProfile = getLinkFromDbx;
+      if (req.file) {
+        if (!data.photoProfile) {
+          res.status(400).json({ messages: "Image not detected" });
+          return;
+        } else {
+          await UploadToDropbox(data.photoProfile, pathFile);
+          const getLinkFromDbx = await getDropboxSharedLink(pathFile);
+          data.photoProfile = getLinkFromDbx;
+        }
       }
 
       if (data.password) {
