@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import GameControllers from "../Controllers/game";
 import JWTAuth from "../middlewares/JWTAuth";
 import Upload from "../middlewares/UploadFile";
 
-const gameRoute = Router()
+const gameRoute = express.Router()
 
 gameRoute.get('/games', GameControllers.GetGames)
 gameRoute.get('/games/:id', GameControllers.GetGameById)

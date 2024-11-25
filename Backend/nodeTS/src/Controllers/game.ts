@@ -45,9 +45,10 @@ export default new class GameControllers {
             const response = await GameServices.GetGameById(id)
 
             if(response.status === "Failed") {
-                throw error
+                res.status(400).json(response)          
+            } else {
+                res.status(200).json(response)
             }
-            res.status(200).json(response)            
         } catch (error) {
             res.status(500).json(error)
         }
@@ -73,7 +74,11 @@ export default new class GameControllers {
 
             const response = await GameServices.UpdateGame(id, data)
 
-            res.status(200).json(response)
+            if(response.status === "Failed") {
+                res.status(400).json(response)          
+            } else {
+                res.status(200).json(response)
+            }
         } catch (error) {
             res.status(500).json(error)
         }
@@ -84,7 +89,11 @@ export default new class GameControllers {
             const id = parseInt(req.params.id)
             const response = await GameServices.DeleteGame(id)
 
-            res.status(200).json(response)
+            if(response.status === "Failed") {
+                res.status(400).json(response)          
+            } else {
+                res.status(200).json(response)
+            }
         } catch (error) {
             res.status(500).json(error)
         }
