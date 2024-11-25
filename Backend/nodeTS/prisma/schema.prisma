@@ -31,6 +31,7 @@ model Games {
   name        String
   description String
   icon        String
+  types       String[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   gameProduct GameProduct[]
@@ -42,6 +43,7 @@ model GameProduct {
   name        String
   price       Float
   image       String[]
+  type        String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   gameId      Int
