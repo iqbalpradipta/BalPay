@@ -1,6 +1,7 @@
 import { Dropbox } from "dropbox";
 import express from "express";
 import fs from "fs";
+import { refreshToken } from "./dropBoxGenerateToken";
 
 let dropBoxAccessToken = `${process.env.DROPBOX_ACCESS_TOKEN}`;
 let dbx = new Dropbox({ accessToken: dropBoxAccessToken });
@@ -10,6 +11,7 @@ export async function UploadToDropbox(
   dropboxPath: string
 ): Promise<void> {
   try {
+    await refreshToken()
     const fileContent = fs.readFileSync(localFilePath);
     await dbx.filesUpload({
       path: dropboxPath,
