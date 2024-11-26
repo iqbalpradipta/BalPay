@@ -1,7 +1,5 @@
 import { Dropbox } from "dropbox";
-import express from "express";
 import fs from "fs";
-import { refreshToken } from "./dropBoxGenerateToken";
 
 let dropBoxAccessToken = `${process.env.DROPBOX_ACCESS_TOKEN}`;
 let dbx = new Dropbox({ accessToken: dropBoxAccessToken });
@@ -11,7 +9,6 @@ export async function UploadToDropbox(
   dropboxPath: string
 ): Promise<void> {
   try {
-    await refreshToken()
     const fileContent = fs.readFileSync(localFilePath);
     await dbx.filesUpload({
       path: dropboxPath,
@@ -31,12 +28,12 @@ export async function UploadToDropboxArray(
   dropboxPaths: string[]
 ): Promise<void> {
   if (localFilePaths.length !== dropboxPaths.length) {
-    throw new Error("The number of local file paths must match the number of Dropbox paths.");
+    throw new Error(
+      "The number of local file paths must match the number of Dropbox paths."
+    );
   }
 
   try {
-    await refreshToken();
-
     for (let i = 0; i < localFilePaths.length; i++) {
       const fileContent = fs.readFileSync(localFilePaths[i]);
 
@@ -55,7 +52,6 @@ export async function UploadToDropboxArray(
     throw error;
   }
 }
-
 
 export const getDropboxSharedLink = async (
   dropboxPath: string
