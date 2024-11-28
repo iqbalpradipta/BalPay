@@ -3,13 +3,17 @@ package model
 import "time"
 
 type TransactionPayment struct {
-	Id                int             	`json:"id" gorm:"primaryKey:autoIncrement"`
-  	PaymentStatus     string			`json:"paymentStatus"`		
-  	PaidAt            time.Time         `json:"paidAt"`
-  	CreatedAt         time.Time         `json:"createdAt"`
-  	UpdatedAt         time.Time         `json:"updatedAt"`
-  	TransactionId     int				`json:"transactionId"`
-  	PaymentMethodId   int				`json:"paymentMethodId"`
-  	Transaction       *Transaction      `gorm:"foreignKey:transactionId"`
-  	PaymentMethod     *PaymentMethod    `gorm:"foreignKey:paymentMethodId"`
+	Id              int           `json:"id" gorm:"primaryKey;autoIncrement;column:id"`
+	PaymentStatus   string        `json:"paymentStatus" form:"paymentStatus" gorm:"column:paymentStatus"`
+	PaidAt          time.Time     `json:"paidAt" gorm:"column:paidAt"`
+	CreatedAt       time.Time     `json:"createdAt" gorm:"column:createdAt"`
+	UpdatedAt       time.Time     `json:"updatedAt" gorm:"column:updatedAt"`
+	TransactionId   int           `json:"transactionId" gorm:"column:transactionId"`
+	PaymentMethodId int           `json:"paymentMethodId" gorm:"column:paymentMethodId"`
+	Transaction     Transaction   `gorm:"foreignKey:transactionId"`
+	PaymentMethod   PaymentMethod `gorm:"foreignKey:paymentMethodId"`
+}
+
+func (TransactionPayment) TableName() string {
+	return "TransactionPayment"
 }
