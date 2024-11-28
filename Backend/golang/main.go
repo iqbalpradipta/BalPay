@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/iqbalpradipta/BalPay/golang/src/config"
-	"github.com/iqbalpradipta/BalPay/golang/src/migration"
 	"github.com/iqbalpradipta/BalPay/golang/src/routes"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,7 +17,6 @@ func main() {
 	}))
 
 	config.DBConfig()
-	migration.Migration()
 	routes.Routes(e.Group("/api/v1"))
 
 
