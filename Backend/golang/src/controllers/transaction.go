@@ -85,6 +85,10 @@ func (ts *transactionService) UpdateTransaction(c echo.Context) (err error) {
 		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to bind data"))
 	}
 
+	if transaction.Id != 0 {
+		transactionData.Id = transaction.Id
+	}
+
 	if transaction.Status != "" {
 		transactionData.Status = transaction.Status
 	}
@@ -100,4 +104,19 @@ func (ts *transactionService) UpdateTransaction(c echo.Context) (err error) {
 	}
 
 	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success Update Data", response))
-} 
+}
+
+func (ts *transactionService) DeleteTransaction(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	transactionData, err := ts.transactionRepository.GetTransactionById(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helpers.FailedResponse("Failed to get data with id"))
+	}
+
+	data, err := ts.transactionRepository.DeleteTransaction(transactionData)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to delete data"))
+	}
+
+	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success delete data", data))
+}
