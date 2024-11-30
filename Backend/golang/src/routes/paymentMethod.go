@@ -1,0 +1,18 @@
+package routes
+
+import (
+	"github.com/iqbalpradipta/BalPay/golang/src/config"
+	"github.com/iqbalpradipta/BalPay/golang/src/controllers"
+	"github.com/iqbalpradipta/BalPay/golang/src/middlewares"
+	"github.com/iqbalpradipta/BalPay/golang/src/service"
+	"github.com/labstack/echo/v4"
+)
+
+func PaymentMethod(e echo.Group) {
+	servicePaymentMethod := service.PaymentMethodRepository(config.DB)
+	controllerPaymentMethod := controllers.PaymentController(servicePaymentMethod)
+
+	e.GET("/paymentMethod", controllerPaymentMethod.GetPaymentMethod)
+	e.GET("/paymentMethod/:id", controllerPaymentMethod.GetPaymentMethod)
+	e.POST("/paymentMethod", controllerPaymentMethod.CreatePaymentMethod, middlewares.JWTMiddleware(), middlewares.Authentication([]string{"admin"}))
+}
