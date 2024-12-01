@@ -59,3 +59,53 @@ func(ps *paymentMethodService) CreatePaymentMethod(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success create data", data))
 }
+
+func(ps *paymentMethodService) UpdatePaymentMethod(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	paymentMethodData, err := ps.paymentMethodRepository.GetPaymentMethodId(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to find data"))
+	}
+
+	paymentMethod := new(model.PaymentMethod)
+	err = c.Bind(paymentMethod)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to bind data"))
+	}
+
+	if paymentMethod.Id != 0 {
+		paymentMethodData.Id = paymentMethod.Id
+	}
+
+	if paymentMethod.Name != "" {
+		paymentMethodData.Name = paymentMethod.Name
+	}
+
+	if paymentMethod.Description != "" {
+		paymentMethodData.Description = paymentMethod.Description
+	}
+
+	paymentMethod.UpdatedAt = time.Now()
+	response, err := ps.paymentMethodRepository.UpdatePaymentMethod(paymentMethodData)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helpers.FailedResponse("Failed to created data"))
+	}
+
+	return c.JSON(http.StatusBadRequest, helpers.SuccessResponse("Success Update Data", response))
+}
+
+func(ps *paymentMethodService) DeletePaymentMethod(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	findPaymentMethod, err := ps.paymentMethodRepository.GetPaymentMethodId(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to get id"))
+	}
+	
+	paymentMethod, err := ps.paymentMethodRepository.DeletePaymentMethod(findPaymentMethod)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helpers.FailedResponse("Failed to delete data"))
+	}
+
+	return c.JSON(http.StatusOK, helpers.SuccessResponse("Succes Delete Payment Method", paymentMethod))
+
+}
