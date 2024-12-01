@@ -26,7 +26,7 @@ func(r *Repository) GetPaymentMethod() ([]model.PaymentMethod, error) {
 
 func(r *Repository) GetPaymentMethodId(id int) (model.PaymentMethod, error) {
 	var paymentMethod model.PaymentMethod
-	err := r.db.Preload("TransactionPayment").First(&paymentMethod).Error
+	err := r.db.Preload("TransactionPayment").First(&paymentMethod, id).Error
 
 	return paymentMethod, err
 }
