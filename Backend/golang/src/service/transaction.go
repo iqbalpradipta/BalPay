@@ -19,13 +19,13 @@ func TransactionRepository(db *gorm.DB) *Repository {
 
 func (r *Repository) GetTransaction() ([]model.Transaction, error) {
     var transactions []model.Transaction
-    err := r.db.Preload("Users").Preload("Games").Preload("GameProduct").Find(&transactions).Error
+    err := r.db.Preload("Users").Preload("Games").Preload("GameProduct").Preload("TransactionPayment").Find(&transactions).Error
     return transactions, err
 }
 
 func (r *Repository) GetTransactionById(id int) (model.Transaction, error) {
     var transaction model.Transaction
-    err := r.db.Preload("Users").Preload("Games").Preload("GameProduct").First(&transaction, id).Error
+    err := r.db.Preload("Users").Preload("Games").Preload("GameProduct").Preload("TransactionPayment").First(&transaction, id).Error
     return transaction, err
 }
 
@@ -34,7 +34,7 @@ func (r *Repository) CreateTransaction(transaction model.Transaction) (model.Tra
     if err != nil {
         return transaction, err
     }
-    err = r.db.Preload("Users").Preload("Games").Preload("GameProduct").First(&transaction, transaction.Id).Error
+    err = r.db.Preload("Users").Preload("Games").Preload("GameProduct").Preload("TransactionPayment").First(&transaction, transaction.Id).Error
     return transaction, err
 }
 

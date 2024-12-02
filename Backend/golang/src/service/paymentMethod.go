@@ -19,14 +19,14 @@ func PaymentMethodRepository(db *gorm.DB) *Repository {
 
 func(r *Repository) GetPaymentMethod() ([]model.PaymentMethod, error) {
 	var paymentMethod []model.PaymentMethod
-	err := r.db.Preload("TransactionPayment").Find(&paymentMethod).Error
+	err := r.db.Joins("TransactionPayment").Find(&paymentMethod).Error
 	
 	return paymentMethod, err
 }
 
 func(r *Repository) GetPaymentMethodId(id int) (model.PaymentMethod, error) {
 	var paymentMethod model.PaymentMethod
-	err := r.db.Preload("TransactionPayment").First(&paymentMethod, id).Error
+	err := r.db.Joins("TransactionPayment").First(&paymentMethod, id).Error
 
 	return paymentMethod, err
 }
