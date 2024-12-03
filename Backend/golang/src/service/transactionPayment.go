@@ -14,7 +14,7 @@ type TransactionPayment interface {
 }
 
 func TransactionPaymentRepository(db *gorm.DB) *Repository {
-	return &Repository{db}
+	return &Repository{db: db}
 }
 
 func(r *Repository) GetTransactionPayment() ([]model.TransactionPayment, error) {

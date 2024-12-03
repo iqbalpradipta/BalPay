@@ -8,7 +8,7 @@ type PaymentMethod struct {
 	Description         string					`json:"description,omitempty" form:"description" gorm:"column:description"`
 	CreatedAt   		time.Time     			`json:"createdAt,omitempty" gorm:"column:createdAt"`
     UpdatedAt   		time.Time     			`json:"updatedAt,omitempty" gorm:"column:updatedAt"`
-	TransactionPayment  []TransactionPayment	`gorm:"foreignKey:paymentMethodId" json:"TransactionPayment,omitempty"`
+	TransactionPayment  []TransactionPayment	`gorm:"foreignKey:paymentMethodId;constraint:OnDelete:CASCADE" json:"TransactionPayment,omitempty"`
 }
 
 func(PaymentMethod) TableName() string {

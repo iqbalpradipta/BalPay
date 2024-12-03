@@ -12,7 +12,7 @@ type GameProduct struct {
     UpdatedAt   time.Time     	`json:"updatedAt,omitempty" gorm:"column:updatedAt"`
   	GameId      int				`json:"gameId,omitempty" gorm:"column:gameId"`
   	Games       Games 			`gorm:"foreignKey:gameId" json:"Games,omitempty"`        
-  	Transaction []Transaction	`gorm:"foreignKey:gameProductId" json:"Transaction,omitempty"`
+  	Transaction []Transaction	`gorm:"foreignKey:gameProductId;constraint:OnDelete:CASCADE" json:"Transaction,omitempty"`
 }
 
 func(GameProduct) TableName() string {

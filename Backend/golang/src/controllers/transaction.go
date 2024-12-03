@@ -14,10 +14,14 @@ import (
 
 type transactionService struct {
 	transactionRepository service.Transaction
+	midtransService       service.MidtransService
 }
 
-func TransactionController(transactionRepository service.Transaction) *transactionService {
-	return &transactionService{transactionRepository}
+func TransactionController(transactionRepository service.Transaction, midtransService service.MidtransService) *transactionService {
+	return &transactionService{
+		transactionRepository: transactionRepository,
+		midtransService:       midtransService,
+	}
 }
 
 func (ts *transactionService) GetTransaction(c echo.Context) error {
@@ -63,8 +67,19 @@ func(ts *transactionService) CreateTransaction(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helpers.FailedResponse("Error create data transaction"))
 	}
+	
+	createdPayment, snapToken, err := ts.midtransService.CreatePaymentWithToken(createdTransaction)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to create payment"))
+	}
 
-	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success create data", createdTransaction))
+	response := map[string]interface{} {
+		"transaction": createdTransaction,
+		"transactionPayment": createdPayment,
+		"snap_token": snapToken,
+	}
+
+	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success create data", response))
 }
 
 func (ts *transactionService) UpdateTransaction(c echo.Context) (err error) {

@@ -4,6 +4,8 @@ go 1.23.3
 
 require github.com/labstack/echo/v4 v4.12.0
 
+require github.com/midtrans/midtrans-go v1.3.8 // indirect
+
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

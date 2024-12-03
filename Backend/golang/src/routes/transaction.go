@@ -10,7 +10,9 @@ import (
 
 func TransactionRoutes(e *echo.Group) {
 	serviceTransaction := service.TransactionRepository(config.DB)
-	controllerTransaction := controllers.TransactionController(serviceTransaction)
+	transactionPaymentRepo := service.PaymentMethodRepository(config.DB)
+	midtransService := service.NewMidtransService(transactionPaymentRepo) 
+	controllerTransaction := controllers.TransactionController(serviceTransaction, midtransService)
 
 	e.GET("/transaction", controllerTransaction.GetTransaction)
 	e.GET("/transaction/:id", controllerTransaction.GetTransactionById)
