@@ -6,10 +6,10 @@ import { Layout } from 'antd'
 function LayoutComponent() {
   return (
     <>
-        <Layout>
-          <Navbar />
-          <Outlet />
-        </Layout>
+      <Layout>
+        <Navbar />
+        <Outlet />
+      </Layout>
     </>
   )
 }
