@@ -12,7 +12,7 @@ function Game() {
                         <div style={{ padding: 20 }}  >
                             <Card
                                 hoverable
-                                style={{ width: '100%' }}
+                                style={{ width: '80%' }}
                                 cover={<img alt={value.judul} src={value.image} />}
                             >
                                 <Meta title={value.judul} description={value.deskripsi} />
