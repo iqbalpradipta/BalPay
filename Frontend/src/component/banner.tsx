@@ -4,7 +4,7 @@ import banner from '../mocks/banner.json'
 function Banner() {
     return (
         <>
-            <Carousel autoplay autoplaySpeed={3000} centerMode centerPadding='250px' infinite slidesToShow={1}>
+            <Carousel autoplay autoplaySpeed={5000} centerMode centerPadding='250px' infinite slidesToShow={1}>
                 {banner.map((value, index) => (
                     <div key={index}>
                         <Image

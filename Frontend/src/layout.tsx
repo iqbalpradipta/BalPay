@@ -8,6 +8,8 @@ function LayoutComponent() {
     <>
       <Layout>
         <Navbar />
+      </Layout>
+      <Layout>
         <Outlet />
       </Layout>
     </>

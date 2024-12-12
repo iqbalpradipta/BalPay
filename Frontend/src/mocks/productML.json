@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Diamond 5",
+        "price": "5000"
+    },
+    {
+        "name": "Diamond 15",
+        "price": "10000"
+    },
+    {
+        "name": "Diamond 100",
+        "price": "25000"
+    },
+    {
+        "name": "Diamond 250",
+        "price": "55000"
+    },
+    {
+        "name": "Diamond 500",
+        "price": "150000"
+    }
+]
