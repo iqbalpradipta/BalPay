@@ -43,7 +43,7 @@ function Navbar() {
     <>
       <Header style={{ display: 'flex', gap: 50, alignItems: 'center' }}>
         <Title level={3} style={{ color: 'white', padding: 10 }} >BalPay</Title>
-        <Search placeholder="input search text" onSearch={onSearch} style={{
+        <Search placeholder="Search..." onSearch={onSearch} style={{
           flex: 1,
         }} />
         <Menu
