@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Button, Row } from 'antd'
+import { Divider } from 'antd'
 import Banner from '../component/banner'
 import Game from '../component/game'
 
