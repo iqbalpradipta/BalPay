@@ -20,7 +20,6 @@ model Users {
   password      String
   phoneNumber   String
   role          String        @default("member")
-  photoProfile  String
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   transaction   Transaction[]
@@ -55,6 +54,7 @@ model Transaction {
   id                  Int                 @id @default(autoincrement())
   status              String
   amount              Float
+  messages            String
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   userId              Int
@@ -63,26 +63,4 @@ model Transaction {
   users               Users               @relation(fields: [userId], references: [id])
   games               Games               @relation(fields: [gameId], references: [id])
   gameProduct         GameProduct         @relation(fields: [gameProductId], references: [id])
-  transactionPayment  TransactionPayment[]
-}
-
-model PaymentMethod {
-  id                  Int             @id @default(autoincrement())
-  name                String
-  description         String
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
-  transactionPayment  TransactionPayment[]
-}
-
-model TransactionPayment {
-  id                Int                 @id @default(autoincrement())
-  paymentStatus     String
-  paidAt            DateTime            @default(now())
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @default(now())
-  transactionId     Int
-  paymentMethodId   Int
-  transaction       Transaction         @relation(fields: [transactionId], references: [id])
-  paymentMethod     PaymentMethod       @relation(fields: [paymentMethodId], references: [id])
 }

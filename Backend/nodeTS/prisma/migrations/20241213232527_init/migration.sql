@@ -6,7 +6,6 @@ CREATE TABLE "Users" (
     "password" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
     "role" TEXT NOT NULL DEFAULT 'member',
-    "photoProfile" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -45,6 +44,7 @@ CREATE TABLE "Transaction" (
     "id" SERIAL NOT NULL,
     "status" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
+    "messages" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -52,30 +52,6 @@ CREATE TABLE "Transaction" (
     "gameProductId" INTEGER NOT NULL,
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "PaymentMethod" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "PaymentMethod_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "TransactionPayment" (
-    "id" SERIAL NOT NULL,
-    "paymentStatus" TEXT NOT NULL,
-    "paidAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "transactionId" INTEGER NOT NULL,
-    "paymentMethodId" INTEGER NOT NULL,
-
-    CONSTRAINT "TransactionPayment_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey
@@ -89,9 +65,3 @@ ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_gameId_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_gameProductId_fkey" FOREIGN KEY ("gameProductId") REFERENCES "GameProduct"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "TransactionPayment" ADD CONSTRAINT "TransactionPayment_transactionId_fkey" FOREIGN KEY ("transactionId") REFERENCES "Transaction"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "TransactionPayment" ADD CONSTRAINT "TransactionPayment_paymentMethodId_fkey" FOREIGN KEY ("paymentMethodId") REFERENCES "PaymentMethod"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -26,7 +26,7 @@ func TransactionController(transactionRepository service.Transaction, midtransSe
 
 func (ts *transactionService) GetTransaction(c echo.Context) error {
 	transaction, err := ts.transactionRepository.GetTransaction()
-	if(err != nil) {
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Error when get data"))
 	}
 	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success get data transaction", transaction))
@@ -41,12 +41,12 @@ func (ts *transactionService) GetTransactionById(c echo.Context) error {
 	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success get data transaction by id", transaction))
 }
 
-func(ts *transactionService) CreateTransaction(c echo.Context) error {
+func (ts *transactionService) CreateTransaction(c echo.Context) error {
 	userId, _ := middlewares.ExtractToken(c)
 	if userId == -1 {
 		return c.JSON(http.StatusUnauthorized, helpers.FailedResponse("Invalid token"))
-	} 
-	
+	}
+
 	transaction := new(model.Transaction)
 	err := c.Bind(&transaction)
 	if err != nil {
@@ -54,29 +54,28 @@ func(ts *transactionService) CreateTransaction(c echo.Context) error {
 	}
 
 	transactionModel := model.Transaction{
-		Status: transaction.Status,
-		Amount: transaction.Amount,
-		UserId: userId,
-		GameId: transaction.GameId,
+		Status:        transaction.Status,
+		Amount:        transaction.Amount,
+		UserId:        userId,
+		GameId:        transaction.GameId,
 		GameProductId: transaction.GameProductId,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
 	}
 
 	createdTransaction, err := ts.transactionRepository.CreateTransaction(transactionModel)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helpers.FailedResponse("Error create data transaction"))
 	}
-	
-	createdPayment, snapToken, err := ts.midtransService.CreatePaymentWithToken(createdTransaction)
+
+	snapToken, err := ts.midtransService.CreateMidtransTransaction(createdTransaction)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to create payment"))
 	}
 
-	response := map[string]interface{} {
+	response := map[string]interface{}{
 		"transaction": createdTransaction,
-		"transactionPayment": createdPayment,
-		"snap_token": snapToken,
+		"snap_token":  snapToken,
 	}
 
 	return c.JSON(http.StatusOK, helpers.SuccessResponse("Success create data", response))
@@ -86,7 +85,7 @@ func (ts *transactionService) UpdateTransaction(c echo.Context) (err error) {
 	userId, _ := middlewares.ExtractToken(c)
 	if userId == -1 {
 		return c.JSON(http.StatusUnauthorized, helpers.FailedResponse("Invalid token"))
-	} 
+	}
 
 	id, _ := strconv.Atoi(c.Param("id"))
 	transactionData, err := ts.transactionRepository.GetTransactionById(id)
@@ -94,7 +93,7 @@ func (ts *transactionService) UpdateTransaction(c echo.Context) (err error) {
 		return c.JSON(http.StatusNotFound, helpers.FailedResponse("Failed to found id"))
 	}
 
-	transaction:= new(model.Transaction)
+	transaction := new(model.Transaction)
 	err = c.Bind(transaction)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helpers.FailedResponse("Failed to bind data"))

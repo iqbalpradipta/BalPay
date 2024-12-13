@@ -9,7 +9,6 @@ type Users struct {
 	Password      string 		`json:"password,omitempty" form:"password" gorm:"column:password"`
 	PhoneNumber   string 		`json:"phoneNumber,omitempty" form:"phoneNumber" gorm:"column:phoneNumber"`
 	Role          string 		`gorm:"column:role;default:member" json:"role,omitempty"`
-	PhotoProfile  string 		`json:"photoProfile,omitempty" form:"photoProfile" gorm:"column:photoProfile"`
 	CreatedAt     time.Time     `json:"createdAt,omitempty" gorm:"column:createdAt"`
     UpdatedAt     time.Time     `json:"updatedAt,omitempty" gorm:"column:updatedAt"`
 	Transaction   []Transaction	`gorm:"foreignKey:userId" json:"Transaction,omitempty"`	

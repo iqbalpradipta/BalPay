@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/midtrans/midtrans-go"
 	"github.com/midtrans/midtrans-go/coreapi"
@@ -15,17 +14,15 @@ import (
 
 type MidtransService interface {
 	CreateMidtransTransaction(transaction model.Transaction) (*snap.Response, error)
-	CreatePaymentWithToken(transaction model.Transaction) (model.TransactionPayment, *snap.Response, error)
 	ProcessNotification(notification map[string]interface{}) (model.Transaction, error)
 }
 
 type midtransService struct {
-	paymentRepo     TransactionPayment
 	transactionRepo Transaction
 	coreAPI         coreapi.Client
 }
 
-func NewMidtransService(paymentRepo TransactionPayment, transactionRepo Transaction) MidtransService {
+func NewMidtransService(transactionRepo Transaction) MidtransService {
 	serverKey := os.Getenv("MIDTRANS_SERVER_KEY")
 	if serverKey == "" {
 		panic("MIDTRANS_SERVER_KEY is not set")
@@ -35,7 +32,6 @@ func NewMidtransService(paymentRepo TransactionPayment, transactionRepo Transact
 	core.New(serverKey, midtrans.Sandbox)
 
 	return &midtransService{
-		paymentRepo:     paymentRepo,
 		transactionRepo: transactionRepo,
 		coreAPI:         core,
 	}
@@ -58,29 +54,6 @@ func (ms *midtransService) CreateMidtransTransaction(transaction model.Transacti
 	}
 
 	return snapResp, nil
-}
-
-func (ms *midtransService) CreatePaymentWithToken(transaction model.Transaction) (model.TransactionPayment, *snap.Response, error) {
-	snapResp, err := ms.CreateMidtransTransaction(transaction)
-	if err != nil {
-		return model.TransactionPayment{}, nil, err
-	}
-
-	payment := model.TransactionPayment{
-		PaymentStatus:   "pending",
-		PaidAt:          time.Time{},
-		CreatedAt:       time.Now(),
-		UpdatedAt:       time.Now(),
-		TransactionId:   transaction.Id,
-		PaymentMethodId: 2,
-	}
-
-	createdPayment, err := ms.paymentRepo.CreateTransactionPayment(payment)
-	if err != nil {
-		return model.TransactionPayment{}, nil, err
-	}
-
-	return createdPayment, snapResp, nil
 }
 
 func (ms *midtransService) ProcessNotification(notification map[string]interface{}) (model.Transaction, error) {
