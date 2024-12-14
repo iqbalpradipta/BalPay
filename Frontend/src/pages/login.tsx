@@ -1,14 +1,48 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, Flex, Typography } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, Checkbox, Form, Input, Flex, Typography, Alert } from 'antd';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { loginUser } from '../store/action/userAction';
+import { AppDispatch } from '../store/store';
 
 function Login() {
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
+    const dispatch: AppDispatch = useDispatch()
+    const navigate = useNavigate()
+    const [alert, setAlert] = useState<string>("")
+
+    const onFinish = async (values: any) => {
+        try {
+            await dispatch(loginUser(values)).unwrap()
+            setAlert('success')
+            setTimeout(() => {
+                navigate('/')
+            }, 300)
+        } catch (error) {
+            setAlert('failed')
+        }
     };
 
     return (
         <>
+            {alert === 'success' && (
+                <Alert
+                    message="Login Success"
+                    description="Welcome to BalPay, you wil redirect to homepage !"
+                    type='success'
+                    showIcon
+                />
+            )}
+
+            {alert === 'failed' && (
+                <Alert
+                    message="Login Failed"
+                    description="Email/Password is wrong"
+                    type='error'
+                    showIcon
+                />
+            )}
+
             <div style={{marginTop: 100, marginBottom: 150}}>
                 <Typography.Title level={4} style={{ flex: 1, textAlign: 'center' }}>Login</Typography.Title>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
