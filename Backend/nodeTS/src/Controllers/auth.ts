@@ -7,7 +7,6 @@ export default new (class AuthController {
     try {
       const data = req.body;
       data.password = bcrypt.hashSync(req.body.password, 10);
-      data.photoProfile = 'https://static.vecteezy.com/system/resources/previews/036/280/650/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg'
       const response = await AuthService.Register(data);
 
       if (response.status === "Failed") {
@@ -25,7 +24,6 @@ export default new (class AuthController {
       const data = req.body;
       data.password = bcrypt.hashSync(req.body.password, 10);
       data.role = "admin";
-      data.photoProfile = 'https://i.pinimg.com/736x/fc/09/71/fc09710e83d5a5391ec237e0915703f2.jpg'
       const response = await AuthService.RegisterAdmin(data);
 
       if (response.status === "Failed") {
