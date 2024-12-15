@@ -5,6 +5,9 @@ import Product from "./pages/product"
 import Order from "./pages/order"
 import Login from "./pages/login"
 import Register from "./pages/register"
+import ProductType from "./pages/productType"
+import TopUpProduct from "./pages/topUpProduct"
+import AkunProduct from "./pages/akunProduct"
 
 function App() {
   return (
@@ -14,6 +17,9 @@ function App() {
           <Route path="/" element={<LayoutComponent />}>
             <Route path="/" element={<Home />} />
             <Route path="/product" element={<Product />} />
+            <Route path="/product/productType" element={<ProductType />} />
+            <Route path="/product/productType/topUpProduct" element={<TopUpProduct />} />
+            <Route path="/product/productType/akunProduct" element={<AkunProduct />} />
             <Route path="/order" element={<Order />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

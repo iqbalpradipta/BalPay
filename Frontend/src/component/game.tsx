@@ -17,7 +17,7 @@ function Game() {
                             >
                                 <Meta title={value.judul} description={value.deskripsi} />
                                 <Button variant='outlined' color='default' style={{ marginTop: 20 }}>
-                                    <Link to='/product'>Beli Sekarang!</Link>
+                                    <Link to='/product/productType'>Beli Sekarang!</Link>
                                 </Button>
                             </Card>
                         </div>

@@ -1,4 +1,5 @@
-import { Descriptions, DescriptionsProps, Divider, Typography } from 'antd'
+import { Button, Descriptions, DescriptionsProps, Divider, Typography } from 'antd'
+import { Link } from 'react-router-dom'
 
 function Order() {
     const items: DescriptionsProps['items'] = [
@@ -14,19 +15,40 @@ function Order() {
         },
         {
             label: "Name Product",
-            span: 'filled',
+            span: 2,
             children: "Diamond 100"
         }
     ]
 
     return (
-        <>  
-            <Typography.Title level={4} style={{flex: 1, textAlign: 'center'}}>Order Status</Typography.Title>
-            <Descriptions bordered items={items} style={{padding: 20}} />
+        <>
+            <Typography.Title level={4} style={{ flex: 1, textAlign: 'center' }}>Order Status</Typography.Title>
+            <Descriptions bordered extra={
+                <Button variant='outlined' color='default' style={{ marginTop: 0 }}>
+                    <Link to='/product/productType'>Bayar Sekarang</Link>
+                </Button>
+            }
+                items={items}
+                style={{ padding: 20 }}
+            />
             <Divider />
-            <Descriptions bordered items={items} style={{padding: 20}} />
+            <Descriptions bordered extra={
+                <Button variant='outlined' color='default' style={{ marginTop: 0 }}>
+                    <Link to='/product/productType'>Bayar Sekarang</Link>
+                </Button>
+            }
+                items={items}
+                style={{ padding: 20 }}
+            />
             <Divider />
-            <Descriptions bordered items={items} style={{padding: 20}} />
+            <Descriptions bordered extra={
+                <Button variant='outlined' color='default' style={{ marginTop: 0 }}>
+                    <Link to='/product/productType'>Bayar Sekarang</Link>
+                </Button>
+            }
+                items={items}
+                style={{ padding: 20 }}
+            />
             <Divider />
         </>
     )
