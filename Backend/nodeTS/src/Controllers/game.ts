@@ -19,6 +19,7 @@ export default new (class GameControllers {
 
       if (!data.icon) {
         res.status(400).json({ messages: "image/icon not detected" });
+        return
       } else {
         await UploadToDropbox(data.icon, pathFile);
         const getLinkFromDbx = await getDropboxSharedLink(pathFile);
