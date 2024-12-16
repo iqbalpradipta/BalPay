@@ -22,7 +22,7 @@ function AkunProduct() {
                                 }
                                 actions={[
                                     <Button variant='outlined' color='default'>
-                                        <Link to='/product/productType/akunProduct'>Lihat Detail</Link>
+                                        <Link to='/product/productType/akunProduct/detailProduct'>Lihat Detail</Link>
                                     </Button>,
                                     <Button variant='outlined' color='default'>
                                         <Link to='/product/productType/akunProduct'>Beli Sekarang!</Link>
