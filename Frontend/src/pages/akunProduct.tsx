@@ -18,7 +18,7 @@ function AkunProduct() {
                                         alt={data.name}
                                         src={data.image}
                                         style={{width: 300, height: 220}}
-                                    />
+                                    /> 
                                 }
                                 actions={[
                                     <Button variant='outlined' color='default'>
