@@ -27,13 +27,13 @@ func(r *productRepo) Create(product *model.Product) error {
 
 func(r *productRepo) FindAll() ([]model.Product, error) {
 	var product []model.Product
-	err := r.db.Find(&product).Error
+	err := r.db.Preload("productDetail").Find(&product).Error
 	return product, err
 }
 
 func(r *productRepo) FindById(id uint) (model.Product, error) {
 	var product model.Product
-	err := r.db.First(&product, id).Error
+	err := r.db.Preload("productDetail").First(&product, id).Error
 	return product, err
 }
 

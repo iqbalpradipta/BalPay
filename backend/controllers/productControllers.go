@@ -22,7 +22,7 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 	var product model.Product
 
 	err := c.Bind(&product); if err != nil {
-		return helpers.FailedResponse(c, http.StatusBadRequest, "Bind data failed", err)
+		return helpers.FailedResponse(c, http.StatusBadRequest, "failed to bind data", err)
 	}
 
 	err = pc.ProductService.CreateProduct(&product); if err != nil {
