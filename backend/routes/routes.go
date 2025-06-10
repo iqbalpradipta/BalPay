@@ -21,4 +21,9 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	productDetailService := services.NewProductDetailService(productDetailRepo)
 	productDetailController := controllers.NewProductDetailController(productDetailService)
 	ProductDetailRoutes(api, productDetailController)
+
+	paymentMethodRepo := repository.NewPaymentMethodRepo(db)
+	paymentMethodService := services.NewPaymentMethodService(paymentMethodRepo)
+	paymentMethodController := controllers.NewPaymentMethodControllers(paymentMethodService)
+	PaymentMethodRoutes(api, paymentMethodController)
 }

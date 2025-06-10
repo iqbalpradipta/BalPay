@@ -36,7 +36,7 @@ func (r *productDetailRepo) FindAll() ([]model.ProductDetail, error) {
 func (r *productDetailRepo) FindById(id uint) (model.ProductDetail, error) {
 	var productDetail model.ProductDetail
 
-	err := r.db.First(&productDetail).Error
+	err := r.db.First(&productDetail, id).Error
 
 	return productDetail, err
 }
