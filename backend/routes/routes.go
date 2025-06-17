@@ -11,7 +11,7 @@ import (
 func Routes(e *echo.Echo, db *gorm.DB) {
 	api := e.Group("/api/v1")
 
-	// Depedency Product
+	// Depedency
 	productRepo := repository.NewProductRepository(db)
 	productService := services.NewProductRepository(productRepo)
 	productController := controllers.NewProductController(productService)
@@ -26,4 +26,9 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	paymentMethodService := services.NewPaymentMethodService(paymentMethodRepo)
 	paymentMethodController := controllers.NewPaymentMethodControllers(paymentMethodService)
 	PaymentMethodRoutes(api, paymentMethodController)
+
+	transactionRepo := repository.NewTransactionRepo(db)
+	transactionService := services.NewTransactionService(transactionRepo)
+	transactionControllers := controllers.NewTransactionController(transactionService)
+	TransactionRoutes(api, transactionControllers)
 }
