@@ -10,7 +10,7 @@ type UserRepo interface {
 	FindAll() ([]model.User, error)
 	FindById(id uint) (model.User, error)
 	Update(id uint, update *model.User) error
-	Delete(id uint) error
+	Delete(email string) error
 }
 
 type userRepo struct {
@@ -33,7 +33,7 @@ func (u *userRepo) FindAll() ([]model.User, error) {
 
 func (u *userRepo) FindById(id uint) (model.User, error) {
 	var data model.User
-	err := u.db.First(id, &data).Error
+	err := u.db.First(&data, id).Error
 
 	return data, err
 }
@@ -41,7 +41,7 @@ func (u *userRepo) FindById(id uint) (model.User, error) {
 func (u *userRepo) Update(id uint, update *model.User) error {
 	var data model.User
 
-	err := u.db.First(id, &data).Error; if err != nil {
+	err := u.db.First(&data, id).Error; if err != nil {
 		return err
 	}
 
@@ -64,6 +64,6 @@ func (u *userRepo) Update(id uint, update *model.User) error {
 	return u.db.Save(&update).Error
 }
 
-func (u *userRepo) Delete(id uint) error {
-	return u.db.Delete(id).Error
+func (u *userRepo) Delete(email string) error {
+	return u.db.Where("email = ?", email).Delete(&model.User{}).Error
 }

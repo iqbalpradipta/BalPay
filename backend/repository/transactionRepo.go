@@ -37,7 +37,7 @@ func (t *transactionRepo) FindAll() ([]model.Transaction, error) {
 func (t *transactionRepo) FindById(id uint) (model.Transaction, error) {
 	var data model.Transaction
 
-	err := t.db.First(id, data).Error
+	err := t.db.First(&data, id).Error
 
 	return data, err
 }
@@ -65,7 +65,7 @@ func (t *transactionRepo) Update(id uint, update *model.Transaction) error {
 }
 
 func (t *transactionRepo) Delete(id uint) error {
-	return t.db.Delete(id).Error
+	return t.db.Delete(&model.Transaction{}, id).Error
 }
 
 

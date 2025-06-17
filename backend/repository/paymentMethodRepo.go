@@ -55,5 +55,5 @@ func (p paymentMethod) Update(id uint, update *model.PaymentMethod) error {
 }
 
 func (p paymentMethod) Delete(id uint) error {
-	return p.db.Delete(&id, model.PaymentMethod{}).Error
+	return p.db.Delete(model.PaymentMethod{}, &id).Error
 }

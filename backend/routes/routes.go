@@ -31,4 +31,9 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	transactionService := services.NewTransactionService(transactionRepo)
 	transactionControllers := controllers.NewTransactionController(transactionService)
 	TransactionRoutes(api, transactionControllers)
+
+	userRepo := repository.NewUserRepo(db)
+	userService := services.NewUserService(userRepo)
+	userControllers := controllers.NewUserController(userService)
+	UserRoutes(api, userControllers)
 }
