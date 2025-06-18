@@ -33,6 +33,36 @@ func (u *UserController) CreateUser(c echo.Context) error {
 
 }
 
+func (u *UserController) LoginUser(c echo.Context) error {
+	var data model.User
+
+	err := c.Bind(&data); if err != nil {
+		return helpers.FailedResponse(c, http.StatusBadRequest, "Failed to bind data", err)
+	}
+
+	user, err := u.UserService.LoginUser(&data); if err != nil {
+		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to Login User", err)
+	}
+
+	return helpers.SuccessResponse(c, http.StatusOK, "Success Login User", user)
+
+}
+
+func (u *UserController) GetEmailUser(c echo.Context) error {
+	var data model.User
+
+	err := c.Bind(&data); if err != nil {
+		return helpers.FailedResponse(c, http.StatusBadRequest, "Failed to bind data", err)
+	}
+
+	user, err := u.UserService.GetEmailUser(string(data.Email)); if err != nil {
+		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to Create User", err)
+	}
+
+	return helpers.SuccessResponse(c, http.StatusOK, "Success Find User", user)
+
+}
+
 func (u *UserController) GetAllUser(c echo.Context) error {
 	data, err := u.UserService.GetAllUser(); if err != nil {
 		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to get data", err)

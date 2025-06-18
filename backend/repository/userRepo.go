@@ -7,8 +7,10 @@ import (
 
 type UserRepo interface {
 	Create(data *model.User) error
+	Login(data *model.User) (string, error)
 	FindAll() ([]model.User, error)
 	FindById(id uint) (model.User, error)
+	FindByEmail(email string) (model.User, error)
 	Update(id uint, update *model.User) error
 	Delete(email string) error
 }
@@ -16,6 +18,8 @@ type UserRepo interface {
 type userRepo struct {
 	db *gorm.DB
 }
+
+
 
 func NewUserRepo(db *gorm.DB) UserRepo {
 	return &userRepo{db}
@@ -25,9 +29,19 @@ func (u *userRepo) Create(data *model.User) error {
 	return u.db.Create(&data).Error
 }
 
+func (u *userRepo) Login(data *model.User) (string, error) {
+	return "", u.db.Where("email = ?", data.Email).First(&data).Error
+}
+
+func (u *userRepo) FindByEmail(email string) (model.User, error) {
+	var data model.User
+
+	return data, u.db.Where("email = ?", email).First(&data).Error
+}
+
 func (u *userRepo) FindAll() ([]model.User, error) {
 	var data []model.User
-	err := u.db.Find(&data).Error;
+	err := u.db.Find(&data).Error
 	return data, err
 }
 
@@ -41,7 +55,8 @@ func (u *userRepo) FindById(id uint) (model.User, error) {
 func (u *userRepo) Update(id uint, update *model.User) error {
 	var data model.User
 
-	err := u.db.First(&data, id).Error; if err != nil {
+	err := u.db.First(&data, id).Error
+	if err != nil {
 		return err
 	}
 
