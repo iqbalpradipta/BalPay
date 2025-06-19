@@ -29,7 +29,7 @@ func (t *transactionRepo) Create(data *model.Transaction) error {
 func (t *transactionRepo) FindAll() ([]model.Transaction, error) {
 	var data []model.Transaction
 
-	err := t.db.Find(data).Error
+	err := t.db.Preload("User").Preload("ProductDetail").Find(&data).Error
 
 	return data, err
 }
@@ -37,7 +37,7 @@ func (t *transactionRepo) FindAll() ([]model.Transaction, error) {
 func (t *transactionRepo) FindById(id uint) (model.Transaction, error) {
 	var data model.Transaction
 
-	err := t.db.First(&data, id).Error
+	err := t.db.Preload("User").Preload("ProductDetail").First(&data, id).Error
 
 	return data, err
 }
@@ -45,7 +45,7 @@ func (t *transactionRepo) FindById(id uint) (model.Transaction, error) {
 func (t *transactionRepo) Update(id uint, update *model.Transaction) error {
 	var data model.Transaction
 
-	err := t.db.First(id, &data).Error; if err != nil {
+	err := t.db.First(&data, id).Error; if err != nil {
 		return err
 	}
 

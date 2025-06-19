@@ -29,7 +29,6 @@ func (t *transactionService) GetAllTransaction() ([]model.Transaction, error) {
 	return t.repo.FindAll()
 }
 
-// GetByIdTransaction implements TransactionService.
 func (t *transactionService) GetByIdTransaction(id uint) (model.Transaction, error) {
 	return t.repo.FindById(id)
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -21,15 +22,25 @@ func NewTransactionController(t services.TransactionService) *TransactionControl
 func (t *TransactionControllers) CreateTransaction(c echo.Context) error  {
 	var data model.Transaction
 
-	err := c.Bind(&data); if err != nil {
+	if err := c.Bind(&data); err != nil {
 		return helpers.FailedResponse(c, http.StatusBadRequest, "Failed to bind data", err)
 	}
 
-	err = t.TransactionService.CreateTransaction(&data); if err != nil {
+	userID, ok := c.Get("user_id").(uint)
+	log.Println(userID)
+	if !ok {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"Messages": "Invalid UserID"})
+	}
+	data.UserID = userID
+
+
+	err := t.TransactionService.CreateTransaction(&data)
+	if err != nil {
 		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to create data", err)
 	}
 
 	return helpers.SuccessResponse(c, http.StatusOK, "Success Create Transaction", data)
+
 }
 
 func (t *TransactionControllers) GetAllTransaction(c echo.Context) error {
@@ -62,7 +73,7 @@ func (t *TransactionControllers) UpdateTransaction(c echo.Context) error {
 	}
 
 	err = t.TransactionService.UpdateTransaction(uint(id), &data); if err != nil {
-		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to get data", err)
+		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to update data", err)
 	}
 
 	return helpers.SuccessResponse(c, http.StatusOK, "Success Update Transaction", data)

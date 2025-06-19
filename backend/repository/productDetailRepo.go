@@ -22,13 +22,13 @@ func NewProductDetailRepo(db *gorm.DB) ProductDetailRepo {
 }
 
 func (r *productDetailRepo) Create(data *model.ProductDetail) error {
-	return r.db.Create(&data).Error
+	return r.db.Preload("Product").Create(&data).Error
 }
 
 func (r *productDetailRepo) FindAll() ([]model.ProductDetail, error) {
 	var productDetail []model.ProductDetail
 
-	err := r.db.Find(&productDetail).Error
+	err := r.db.Preload("Product").Find(&productDetail).Error
 
 	return productDetail, err
 }
@@ -36,7 +36,7 @@ func (r *productDetailRepo) FindAll() ([]model.ProductDetail, error) {
 func (r *productDetailRepo) FindById(id uint) (model.ProductDetail, error) {
 	var productDetail model.ProductDetail
 
-	err := r.db.First(&productDetail, id).Error
+	err := r.db.Preload("Product").First(&productDetail, id).Error
 
 	return productDetail, err
 }

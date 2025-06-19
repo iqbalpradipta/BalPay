@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"slices"
@@ -34,7 +35,8 @@ func Authentication(requiredRoles ...string) echo.MiddlewareFunc {
 				}
 			}
 
-			c.Set("user_id", claims.ID)
+			idUser, _ := strconv.Atoi(claims.ID)
+			c.Set("user_id", uint(idUser))
 			c.Set("user_role", claims.Role)
 
 			return next(c)

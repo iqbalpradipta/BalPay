@@ -24,6 +24,10 @@ func NewPaymentMethodService(r repository.PaymentMethod) PaymentMethod {
 
 
 func (p *paymentMethod) CreatePaymentMethod(data *model.PaymentMethod) error {
+	if data.IconUrl == "" && data.Provider == "xendit" {
+		data.IconUrl = "https://cdn.example.com/xendit-icon.png"
+	}
+	data.Active = true
 	return p.repo.Create(data)
 }
 

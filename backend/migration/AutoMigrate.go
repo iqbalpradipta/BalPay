@@ -12,5 +12,6 @@ func AutoMigrate(db *gorm.DB) error {
 		&model.ProductDetail{},
 		&model.Product{},
 		&model.PaymentMethod{},
+		&model.Payment{},
 	)
 }
