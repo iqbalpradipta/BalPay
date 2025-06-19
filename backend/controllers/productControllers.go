@@ -1,12 +1,15 @@
 package controllers
 
 import (
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/iqbalpradipta/BalPay/tree/main/backend/helpers"
 	"github.com/iqbalpradipta/BalPay/tree/main/backend/model"
 	"github.com/iqbalpradipta/BalPay/tree/main/backend/services"
+	"github.com/iqbalpradipta/BalPay/tree/main/backend/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -21,9 +24,27 @@ func NewProductController(s services.ProductService) *ProductController {
 func (pc *ProductController) CreateProduct(c echo.Context) error {
 	var product model.Product
 
-	err := c.Bind(&product); if err != nil {
-		return helpers.FailedResponse(c, http.StatusBadRequest, "failed to bind data", err)
+	product.Name = c.FormValue("name")
+	product.Description = c.FormValue("description")
+	file, err := c.FormFile("image"); if err != nil {
+		return helpers.FailedResponse(c, http.StatusBadRequest, "File not found", err)
 	}
+
+	src, _ := file.Open()
+	defer src.Close()
+
+	tempPath := "uploads/" + file.Filename
+	dst, err := os.Create(tempPath); if err != nil {
+		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to create temp file", err)
+	}
+	defer dst.Close()
+	io.Copy(dst, src)
+
+	product.Image, err = utils.UploadToCloudinary(tempPath); if err != nil {
+		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed upload to cloudinary", err)
+	}
+	
+	os.Remove(tempPath)
 
 	err = pc.ProductService.CreateProduct(&product); if err != nil {
 		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to create product", err)
