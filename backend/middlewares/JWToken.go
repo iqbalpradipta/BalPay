@@ -7,14 +7,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = []byte(os.Getenv("SECRETKEY"))
-
 type UserInfo struct {
 	ID string
 	Name string
 	Email string
 	Role string
 	jwt.RegisteredClaims
+}
+
+func SecretKey() []byte {
+	var secretKey = []byte(os.Getenv("SECRETKEY"))
+
+	return secretKey
 }
 
 func CreateToken(id, name, email, role string) (string, error) {
@@ -31,7 +35,7 @@ func CreateToken(id, name, email, role string) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(secretKey); if err != nil {
+	tokenString, err := token.SignedString(SecretKey()); if err != nil {
 		return "", err
 	}
 
@@ -40,7 +44,7 @@ func CreateToken(id, name, email, role string) (string, error) {
 
 func ParseToken(tokenString string) (*UserInfo, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &UserInfo{}, func(t *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		return SecretKey(), nil
 	}); if err != nil {
 		return nil, err
 	}
