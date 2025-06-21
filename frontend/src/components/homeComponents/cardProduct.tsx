@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
 import type { CardProductProps } from "@/interface/ICardProduct";
+import { Link } from "react-router";
 
 const CardProduct = ({ title, products }: CardProductProps) => {
   return (
@@ -41,7 +42,9 @@ const CardProduct = ({ title, products }: CardProductProps) => {
                 </HStack>
               </Card.Body>
               <Card.Footer>
-                <Button colorPalette='cyan'><FaShoppingCart />Beli Product</Button>
+                <Button asChild colorPalette='cyan'>
+                  <Link to='/productDetail'><FaShoppingCart />Beli Sekarang</Link>
+                </Button>
               </Card.Footer>
             </Card.Root>
           ))}

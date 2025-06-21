@@ -33,7 +33,8 @@ func (u *userService) CreateUser(data *model.User) error {
 	if err != nil {
 		return err
 	}
-	
+
+	data.Role = "User"
 	data.Password = string(hashPassword)
 	
 	return u.userRepo.Create(data)
