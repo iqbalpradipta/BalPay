@@ -1,6 +1,6 @@
 import DescriptionCard from "@/components/productDetailComponents/descriptionCard";
 import ValueCard from "@/components/productDetailComponents/valueCard";
-import { Box, Container } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 
 function ProductDetail() {
   return (

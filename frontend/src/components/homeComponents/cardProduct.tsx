@@ -7,7 +7,6 @@ import {
   Badge,
   SimpleGrid,
   HStack,
-  Icon,
   Button,
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
