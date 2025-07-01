@@ -17,7 +17,7 @@ import { Link } from "react-router";
 const CardProduct = ({ title, products }: CardProductProps) => {
   return (
     <>
-      <Box bg={"#f4f6fb"} p={5} borderRadius="md">
+      <Box bg={"#f4f6fb"} p={5} borderRadius="md" boxShadow='lg'>
         {title && (
           <Heading fontSize="xl" mb={4}>
             {title}
@@ -42,7 +42,7 @@ const CardProduct = ({ title, products }: CardProductProps) => {
                 </HStack>
               </Card.Body>
               <Card.Footer>
-                <Button asChild colorPalette='cyan'>
+                <Button asChild colorPalette='blue' boxShadow='lg' borderRadius='lg'> 
                   <Link to='/productDetail'><FaShoppingCart />Beli Sekarang</Link>
                 </Button>
               </Card.Footer>

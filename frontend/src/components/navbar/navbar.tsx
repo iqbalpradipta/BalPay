@@ -20,7 +20,7 @@ function Navbar() {
         {login ? <Box background="#ffffff" w="100%" h='70px' borderWidth='1px' shadow="14px 14px 26px 10px rgba(227,227,227,0.64)">
             <Flex gap='6' padding="15px" flexWrap="wrap" alignItems='center'>
                 <Box textStyle="xl" flex='1'>
-                    <Link to="/">BalPay</Link>
+                    <Link to="/">Bal<span style={{color: 'blue', fontWeight: 'bold'}}>Pay</span></Link>
                 </Box>
                 <Box>
                     <Link to='/' style={{display: 'inline-flex', alignItems: 'center'}}><IoMdHome />&nbsp;Home</Link>

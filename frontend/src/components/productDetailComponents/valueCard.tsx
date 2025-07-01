@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
 import { useState } from "react";
+import { Link } from "react-router";
 
 const ProductList = createListCollection({
   items: [
@@ -74,16 +75,17 @@ function ValueCard() {
           </Heading>
           <Input placeholder="1" defaultValue="1" mb={6} />
 
-          {/* Section 3 */}
           <Heading size="md" color="blue.500" mb={2}>
             3 Masukkan Detail Account
           </Heading>
           <Input placeholder="contoh: (uid)/(server)" mb={6} />
         </Box>
         <Center>
-          <Button colorPalette="blue" w="50%" borderRadius="2xl" boxShadow="xl">
-            <FaShoppingCart />
-            Bayar
+          <Button asChild colorPalette="blue" borderRadius='2xl' width='40%'>
+            <Link to="/invoice">
+              <FaShoppingCart />
+              Lanjutkan Pembayaran
+            </Link>
           </Button>
         </Center>
       </Box>
