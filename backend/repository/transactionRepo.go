@@ -11,6 +11,7 @@ type TransactionRepo interface {
 	FindById(id uint) (model.Transaction, error)
 	Update(id uint, update *model.Transaction) error
 	Delete(id uint) error
+	FindByCode(code string) (*model.Transaction, error)
 }
 
 type transactionRepo struct {
@@ -66,6 +67,15 @@ func (t *transactionRepo) Update(id uint, update *model.Transaction) error {
 
 func (t *transactionRepo) Delete(id uint) error {
 	return t.db.Delete(&model.Transaction{}, id).Error
+}
+
+func (r *transactionRepo) FindByCode(code string) (*model.Transaction, error) {
+	var transaction model.Transaction
+    err := r.db.Preload("User").
+                Preload("ProductDetail").
+                Where("transaction_code = ?", code).
+                First(&transaction).Error
+    return &transaction, err
 }
 
 

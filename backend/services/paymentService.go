@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -40,10 +39,9 @@ func (s *paymentService) CreateInvoice(transactionID uint) (string, error) {
 		Amount: float64(data.ProductDetail.Price),
 		PayerEmail:  data.User.Email,
 		Description: fmt.Sprintf("Pembelian %s oleh %s", data.ProductDetail.Name, data.User.Email),
-
 	}
 
-	inv, _ := invoice.Create(&params);
+	inv, _ := invoice.Create(&params)
 	expiredAt := inv.ExpiryDate
 
 	payment := &model.Payment{
@@ -53,47 +51,60 @@ func (s *paymentService) CreateInvoice(transactionID uint) (string, error) {
 		PaymentURL:    inv.InvoiceURL,
 		Status:        inv.Status,
 		ExpiredAt:     expiredAt,
+		ExternalID:    data.TransactionCode,
 	}
+
 
 	if err := s.paymentRepo.Create(payment); err != nil {
 		return "", err
 	}
-	log.Printf("Invoice created: %s\n", inv.InvoiceURL)
 
 	return inv.InvoiceURL, nil
 }
 
 func (s *paymentService) HandleXenditCallback(payload map[string]interface{}) error {
-	token, ok := payload["id"].(string)
-	if !ok {
-		return fmt.Errorf("invalid payload: token not found")
-	}
-	statusRaw, ok := payload["status"].(string)
-	if !ok {
-		return fmt.Errorf("invalid payload: status not found")
-	}
+    token, ok := payload["id"].(string)
+    if !ok {
+        return fmt.Errorf("invalid payload: id not found")
+    }
 
-	status := strings.ToLower(statusRaw)
+    statusRaw, ok := payload["status"].(string)
+    if !ok {
+        return fmt.Errorf("invalid payload: status not found")
+    }
+    externalID, ok := payload["external_id"].(string)
+    if !ok {
+        return fmt.Errorf("invalid payload: external_id not found")
+    }
 
-	payment, err := s.paymentRepo.FindByToken(token)
-	if err != nil {
-		return err
-	}
+    status := strings.ToLower(statusRaw)
 
-	payment.Status = status
-	if status == "paid" {
-		now := time.Now()
-		payment.PaidAt = &now
-	}
+    payment, err := s.paymentRepo.FindByToken(token)
+    if err != nil {
+        return fmt.Errorf("payment not found: %w", err)
+    }
 
-	if err := s.paymentRepo.Update(payment); err != nil {
-		return err
-	}
-	transaction, err := s.transactionRepo.FindById(payment.TransactionID)
-	if err != nil {
-		return err
-	}
-	transaction.StatusTransaction = payment.Status
+    if payment.ExternalID != externalID {
+        return fmt.Errorf("mismatched external_id: payload %s, payment %s", externalID, payment.ExternalID)
+    }
 
-	return s.transactionRepo.Update(transaction.ID, &transaction)
+    payment.Status = status
+    if status == "paid" {
+        now := time.Now()
+        payment.PaidAt = &now
+    }
+
+    if err := s.paymentRepo.Update(payment); err != nil {
+        return fmt.Errorf("failed to update payment: %w", err)
+    }
+
+    transaction, err := s.transactionRepo.FindByCode(externalID)
+    if err != nil {
+        return fmt.Errorf("transaction not found: %w", err)
+    }
+
+    transaction.StatusTransaction = status
+
+    return s.transactionRepo.Update(transaction.ID, transaction)
 }
+

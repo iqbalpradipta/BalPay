@@ -27,11 +27,6 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	transactionControllers := controllers.NewTransactionController(transactionService)
 	TransactionRoutes(api, transactionControllers)
 
-	paymentMethodRepo := repository.NewPaymentMethodRepo(db)
-	paymentMethodService := services.NewPaymentMethodService(paymentMethodRepo)
-	paymentMethodController := controllers.NewPaymentMethodControllers(paymentMethodService)
-	PaymentMethodRoutes(api, paymentMethodController)
-
 	paymentRepo := repository.NewPaymentRepo(db)
 	paymentService := services.NewPaymentService(transactionRepo, paymentRepo)
 	paymentController := controllers.NewPaymentController(paymentService)

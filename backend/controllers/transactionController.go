@@ -32,6 +32,7 @@ func (t *TransactionControllers) CreateTransaction(c echo.Context) error  {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"Messages": "Invalid UserID"})
 	}
 	data.UserID = userID
+	data.StatusTransaction = "pending"
 
 
 	err := t.TransactionService.CreateTransaction(&data)

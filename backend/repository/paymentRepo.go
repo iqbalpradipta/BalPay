@@ -15,6 +15,8 @@ type paymentRepo struct {
 	db *gorm.DB
 }
 
+
+
 func NewPaymentRepo(db *gorm.DB) PaymentRepo {
 	return &paymentRepo{db}
 }
@@ -32,3 +34,4 @@ func (r *paymentRepo) FindByToken(token string) (*model.Payment, error) {
 func (r *paymentRepo) Update(payment *model.Payment) error {
 	return r.db.Save(payment).Error
 }
+
