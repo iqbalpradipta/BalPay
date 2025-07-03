@@ -1,13 +1,29 @@
 import CardProduct from "@/components/homeComponents/cardProduct";
 import { Box } from "@chakra-ui/react";
-import product from "@/mocks/product.json"
+import { useEffect, useState } from "react";
+import api from "@/api/api";
+import type { Product } from "@/interface/ICardProduct";
 
 
 function Home() {
+  const [data, setData] = useState<Product[]>([])
+
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const response = await api.get("/product")
+        setData(response.data.data)
+      } catch (error) {
+        return error
+      }
+    }
+    fetchData()
+  }, [data])
+  
   return (
     <>
       <Box p={1} m={3}>
-        <CardProduct products={product} title="List Game" />
+        <CardProduct products={data} />
       </Box>
     </>
   );

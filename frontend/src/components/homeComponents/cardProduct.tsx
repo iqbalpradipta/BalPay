@@ -4,7 +4,6 @@ import {
   Heading,
   Image,
   Text,
-  Badge,
   SimpleGrid,
   HStack,
   Button,
@@ -13,15 +12,13 @@ import { FaShoppingCart } from "react-icons/fa";
 import type { CardProductProps } from "@/interface/ICardProduct";
 import { Link } from "react-router";
 
-const CardProduct = ({ title, products }: CardProductProps) => {
+const CardProduct = ({ products }: CardProductProps) => {
   return (
     <>
-      <Box bg={"#f4f6fb"} p={5} borderRadius="md" boxShadow='lg'>
-        {title && (
-          <Heading fontSize="xl" mb={4}>
-            {title}
-          </Heading>
-        )}
+      <Box bg={"#f4f6fb"} p={5} borderRadius="md" boxShadow="lg">
+        <Heading fontSize="xl" mb={4}>
+          List Game
+        </Heading>
         <SimpleGrid columns={[2, 3, 6]} gap={4}>
           {products.map((game, index) => (
             <Card.Root
@@ -30,19 +27,24 @@ const CardProduct = ({ title, products }: CardProductProps) => {
               overflow="hidden"
               boxShadow="sm"
             >
-              <Image src={game.image} alt={game.title} h="100%" w="100%" />
+              <Image src={game.image} alt={game.name} h="100%" w="100%" />
               <Card.Body>
-                <Text fontWeight="semibold">{game.title}</Text>
+                <Text fontWeight="semibold">{game.name}</Text>
                 <HStack mt={2} gap={2}>
-                  <Badge colorScheme="red">{game.discount}</Badge>
-                  <Badge colorScheme="blue" variant="subtle">
-                    {game.label}
-                  </Badge>
+                  <Text>{game.description}</Text>
                 </HStack>
               </Card.Body>
               <Card.Footer>
-                <Button asChild colorPalette='blue' boxShadow='lg' borderRadius='lg'> 
-                  <Link to='/productDetail'><FaShoppingCart />Beli Sekarang</Link>
+                <Button
+                  asChild
+                  colorPalette="blue"
+                  boxShadow="lg"
+                  borderRadius="lg"
+                >
+                  <Link to="/productDetail">
+                    <FaShoppingCart />
+                    Beli Sekarang
+                  </Link>
                 </Button>
               </Card.Footer>
             </Card.Root>

@@ -15,11 +15,11 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useState, type SyntheticEvent } from "react";
+import { useEffect, useState, type SyntheticEvent } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router";
 
-function LoginPage() {
+function LoginPage({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction<boolean>> }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,10 +43,13 @@ function LoginPage() {
         "http://localhost:8000/api/v1/login",
         userData
       );
-      
 
       const token = response.data.data;
       localStorage.setItem("authToken", token);
+
+      setLogin(true);
+
+      navigate("/");
 
       toaster.create({
         title: "Login Berhasil!",
@@ -58,7 +61,6 @@ function LoginPage() {
 
       setEmail("");
       setPassword("");
-      navigate("/");
     } catch (error: any) {
       if (error.status == 500) {
         toaster.create({

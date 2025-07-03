@@ -1,6 +1,6 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { IoMdHome, IoMdCreate } from "react-icons/io";
 import {
   IoReceipt,
@@ -10,12 +10,16 @@ import {
 } from "react-icons/io5";
 import { toaster } from "../ui/toaster";
 
-function Navbar() {
-  const [login, setLogin] = useState(!!localStorage.getItem("authToken"));
+function Navbar({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const [login, _ ] = useState(!!localStorage.getItem("authToken"));
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setLogin(false)
+
+    navigate("/login")
+
     toaster.create({
       title: "Logout Berhasil!",
       description: `Silahkan Login kembali untuk melanjutkan`,

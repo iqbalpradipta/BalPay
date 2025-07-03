@@ -1,12 +1,10 @@
 export interface Product {
-  title: string;
+  name: string;
   image: string;
-  discount: string;
-  label: string;
-  sold: string;
+  description: string;
 }
 
 export interface CardProductProps {
-  title?: string;
+  name?: string;
   products: Product[];
 }
