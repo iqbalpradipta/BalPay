@@ -34,7 +34,7 @@ func (u *userService) CreateUser(data *model.User) error {
 		return err
 	}
 
-	data.Role = "User"
+	data.Role = "user"
 	data.Password = string(hashPassword)
 	
 	return u.userRepo.Create(data)
