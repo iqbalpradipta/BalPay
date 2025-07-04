@@ -1,5 +1,5 @@
-import { ParseDescription } from "@/components/productDetailComponents/parseDescription";
-import { Box, Heading, Image } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { CiCircleInfo } from "react-icons/ci";
 const product = {
   title: "Genshin Impact",
   image:
@@ -31,8 +31,25 @@ function DescriptionCard() {
           />
           <Heading size="md">{product.title}</Heading>
         </Box>
-
-        {ParseDescription(product.description)}
+        <Box>
+          <Text fontWeight='bold' fontSize='xl'>Cara Top Up</Text> 
+          <Flex gap={2} alignItems={"center"}>
+            <CiCircleInfo style={{color: 'green'}} />
+            Masukkan User ID kamu
+          </Flex>
+          <Flex gap={2} alignItems={"center"}>
+            <CiCircleInfo style={{color: 'green'}}/>
+            Pilih Nominal yang kamu inginkan{" "}
+          </Flex>
+          <Flex gap={2} alignItems={"center"}>
+            <CiCircleInfo style={{color: 'green'}}/>
+            Selesaikan pembayaran
+          </Flex>
+          <Flex gap={2} alignItems={"center"}>
+            <CiCircleInfo style={{color: 'green'}}/> 
+            Top up akan ditambahkan ke akun Game kamu{" "}
+          </Flex>
+        </Box>
       </Box>
     </>
   );

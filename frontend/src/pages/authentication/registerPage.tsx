@@ -1,4 +1,6 @@
 import { toaster } from "@/components/ui/toaster";
+import type { RootState } from "@/redux/store";
+import { login, setEmail, setName, setPassword } from "@/redux/userSlice";
 import { UserSchema } from "@/validation/userSchema";
 import {
   Box,
@@ -12,28 +14,21 @@ import {
   Button,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useState, type SyntheticEvent } from "react";
+import { type SyntheticEvent } from "react";
 import { FaGoogle } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 
 function RegisterPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{
-    name?: string;
-    email?: string;
-    password?: string;
-  } | null>(null);
+  const user = useSelector((state: RootState) => state.user)
+  const dispatch = useDispatch()
   const navigate = useNavigate();
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setErrors(null);
+    dispatch(login(true))
 
-    const userData = { name, email, password };
+    const userData = { name: user.name, email: user.email, password: user.password };
 
     try {
       await UserSchema.validate(userData, { abortEarly: false });
@@ -50,15 +45,12 @@ function RegisterPage() {
         duration: 5000,
       });
 
-      setName("");
-      setEmail("");
-      setPassword("");
       navigate("/login");
     } catch (error: any) {
       if (error.status == 500) {
         toaster.create({
           title: "Registrasi Gagal.",
-          description: `Email ${email} telah digunakan. Silahkan gunakan email Aktif yang lain.`,
+          description: `Email ${user.email} telah digunakan. Silahkan gunakan email Aktif yang lain.`,
           type: "error",
           closable: true,
           duration: 8000,
@@ -73,7 +65,7 @@ function RegisterPage() {
         });
       }
     } finally {
-      setLoading(false);
+      dispatch(login(false));
     }
   };
 
@@ -97,16 +89,16 @@ function RegisterPage() {
                   <Input
                     placeholder="Full Name"
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={user.name}
+                    onChange={(e) => dispatch(setName(e.target.value))}
                     required
                   />
                   <Field.Label>Email</Field.Label>
                   <Input
                     placeholder="your@email.com"
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={user.email}
+                    onChange={(e) => dispatch(setEmail(e.target.value))}
                     required
                   />
                   <Field.ErrorText>Your email is wrong!</Field.ErrorText>
@@ -114,8 +106,8 @@ function RegisterPage() {
                   <Input
                     placeholder="yourpassword"
                     type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={user.password}
+                    onChange={(e) => dispatch(setPassword(e.target.value))}
                     required
                   />
                 </Field.Root>
@@ -125,7 +117,7 @@ function RegisterPage() {
                   colorPalette="blue"
                   variant="solid"
                   onClick={handleSubmit}
-                  loading={loading}
+                  loading={user.loading}
                   loadingText={"Sedang Mendaftar ...."}
                 >
                   Register

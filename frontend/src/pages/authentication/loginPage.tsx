@@ -1,4 +1,6 @@
 import { toaster } from "@/components/ui/toaster";
+import type { RootState } from "@/redux/store";
+import { login, setEmail, setPassword } from "@/redux/userSlice";
 import { LoginSchema } from "@/validation/userSchema";
 import {
   Box,
@@ -15,27 +17,27 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useEffect, useState, type SyntheticEvent } from "react";
+import { type SyntheticEvent } from "react";
 import { FaGoogle } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 
-function LoginPage({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{
-    name?: string;
-    email?: string;
-    password?: string;
-  } | null>(null);
+function LoginPage({
+  setLogin,
+}: {
+  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const userData = { email: user.email, password: user.password };
+
+  console.log(user);
+
   const navigate = useNavigate();
 
   const handleLogin = async (e: SyntheticEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setErrors(null);
-
-    const userData = { email, password };
+    dispatch(login(true));
 
     try {
       await LoginSchema.validate(userData, { abortEarly: false });
@@ -48,19 +50,16 @@ function LoginPage({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction
       localStorage.setItem("authToken", token);
 
       setLogin(true);
-
       navigate("/");
 
       toaster.create({
         title: "Login Berhasil!",
-        description: `Selamat Datang ${email} :)`,
+        description: `Selamat Datang ${user.email} :)`,
         type: "success",
         closable: true,
         duration: 5000,
       });
 
-      setEmail("");
-      setPassword("");
     } catch (error: any) {
       if (error.status == 500) {
         toaster.create({
@@ -80,7 +79,7 @@ function LoginPage({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction
         });
       }
     } finally {
-      setLoading(false);
+      dispatch(login(false));
     }
   };
   return (
@@ -103,16 +102,16 @@ function LoginPage({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction
                   <Input
                     placeholder="your@email.com"
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={user.email}
+                    onChange={(e) => dispatch(setEmail(e.target.value))}
                   />
                   <Field.ErrorText>Your email is wrong!</Field.ErrorText>
                   <Field.Label>Password</Field.Label>
                   <Input
                     placeholder="yourpassword"
                     type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={user.password}
+                    onChange={(e) => dispatch(setPassword(e.target.value))}
                   />
                 </Field.Root>
                 <Grid templateColumns="repeat(2, 1fr)">
@@ -140,7 +139,7 @@ function LoginPage({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction
                   colorPalette="blue"
                   variant="solid"
                   onClick={handleLogin}
-                  loading={loading}
+                  loading={user.loading}
                   loadingText={"Mencoba Login ...."}
                 >
                   Login

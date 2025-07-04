@@ -73,7 +73,7 @@ function ValueCard() {
           <Heading size="md" color="blue.500" mb={2}>
             2 Masukkan jumlah pembelian
           </Heading>
-          <Input placeholder="1" defaultValue="1" mb={6} />
+          <Input placeholder="1" defaultValue={1} mb={6} />
 
           <Heading size="md" color="blue.500" mb={2}>
             3 Masukkan Detail Account
