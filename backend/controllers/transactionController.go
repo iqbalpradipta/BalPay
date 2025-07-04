@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/iqbalpradipta/BalPay/tree/main/backend/helpers"
 	"github.com/iqbalpradipta/BalPay/tree/main/backend/model"
 	"github.com/iqbalpradipta/BalPay/tree/main/backend/services"
@@ -22,6 +23,8 @@ func NewTransactionController(t services.TransactionService) *TransactionControl
 func (t *TransactionControllers) CreateTransaction(c echo.Context) error  {
 	var data model.Transaction
 
+	randomCode := uuid.New()
+
 	if err := c.Bind(&data); err != nil {
 		return helpers.FailedResponse(c, http.StatusBadRequest, "Failed to bind data", err)
 	}
@@ -31,6 +34,7 @@ func (t *TransactionControllers) CreateTransaction(c echo.Context) error  {
 	if !ok {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"Messages": "Invalid UserID"})
 	}
+	data.TransactionCode = randomCode.String()
 	data.UserID = userID
 	data.StatusTransaction = "pending"
 
@@ -40,7 +44,12 @@ func (t *TransactionControllers) CreateTransaction(c echo.Context) error  {
 		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to create data", err)
 	}
 
-	return helpers.SuccessResponse(c, http.StatusOK, "Success Create Transaction", data)
+	result, err := t.TransactionService.GetByIdTransaction(data.ID)
+	if err != nil {
+		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to create data", err)
+	}
+
+	return helpers.SuccessResponse(c, http.StatusOK, "Success Create Transaction", result)
 
 }
 

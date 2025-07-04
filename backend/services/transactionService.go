@@ -11,6 +11,7 @@ type TransactionService interface {
 	GetByIdTransaction(id uint) (model.Transaction, error)
 	UpdateTransaction(id uint, update *model.Transaction) error
 	DeleteTransaction(id uint) error
+	GetByJSONTransaction(id uint) (model.Transaction, error)
 }
 
 type transactionService struct {
@@ -30,6 +31,10 @@ func (t *transactionService) GetAllTransaction() ([]model.Transaction, error) {
 }
 
 func (t *transactionService) GetByIdTransaction(id uint) (model.Transaction, error) {
+	return t.repo.FindById(id)
+}
+
+func (t *transactionService) GetByJSONTransaction(id uint) (model.Transaction, error) {
 	return t.repo.FindById(id)
 }
 

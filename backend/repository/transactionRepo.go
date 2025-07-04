@@ -12,6 +12,7 @@ type TransactionRepo interface {
 	Update(id uint, update *model.Transaction) error
 	Delete(id uint) error
 	FindByCode(code string) (*model.Transaction, error)
+	FindByJSON(id uint) (model.Transaction, error)
 }
 
 type transactionRepo struct {
@@ -23,8 +24,18 @@ func NewTransactionRepo(db *gorm.DB) TransactionRepo {
 }
 
 func (t *transactionRepo) Create(data *model.Transaction) error {
-	return t.db.Create(&data).Error
+	var productDetail model.ProductDetail
+	if err := t.db.First(&productDetail, data.ProductDetailID).Error; err != nil {
+		return err
+	}
 
+	data.TotalTransaction = data.PurchaseQuantity * productDetail.Price
+
+	if err := t.db.Create(&data).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (t *transactionRepo) FindAll() ([]model.Transaction, error) {
@@ -36,6 +47,14 @@ func (t *transactionRepo) FindAll() ([]model.Transaction, error) {
 }
 
 func (t *transactionRepo) FindById(id uint) (model.Transaction, error) {
+	var data model.Transaction
+
+	err := t.db.Preload("User").Preload("ProductDetail").First(&data, id).Error
+
+	return data, err
+}
+
+func (t *transactionRepo) FindByJSON(id uint) (model.Transaction, error) {
 	var data model.Transaction
 
 	err := t.db.Preload("User").Preload("ProductDetail").First(&data, id).Error
