@@ -6,6 +6,6 @@ import (
 )
 
 func PaymentRoutes(e *echo.Group, pm *controllers.PaymentController) {
-	e.POST("/transaction/:id/pay", pm.Pay)
+	e.GET("/transaction/:id/pay", pm.Pay)
 	e.POST("/webhook/xendit", pm.XenditCallback)
 }

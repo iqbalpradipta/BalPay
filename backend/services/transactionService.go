@@ -7,7 +7,7 @@ import (
 
 type TransactionService interface {
 	CreateTransaction(data *model.Transaction) error
-	GetAllTransaction() ([]model.Transaction, error)
+	GetAllTransaction(userId uint) ([]model.Transaction, error)
 	GetByIdTransaction(id uint) (model.Transaction, error)
 	UpdateTransaction(id uint, update *model.Transaction) error
 	DeleteTransaction(id uint) error
@@ -26,8 +26,8 @@ func (t *transactionService) CreateTransaction(data *model.Transaction) error {
 	return t.repo.Create(data)
 }
 
-func (t *transactionService) GetAllTransaction() ([]model.Transaction, error) {
-	return t.repo.FindAll()
+func (t *transactionService) GetAllTransaction(userId uint) ([]model.Transaction, error) {
+	return t.repo.FindAll(userId)
 }
 
 func (t *transactionService) GetByIdTransaction(id uint) (model.Transaction, error) {

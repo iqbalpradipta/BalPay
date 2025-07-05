@@ -1,7 +1,9 @@
+
 export interface IProductDetail {
   ID: string;
   name: string;
-  price: number
+  price: number;
+  Product: IProduct;
 }
 
 export interface IProduct {
@@ -11,3 +13,9 @@ export interface IProduct {
   description?: string;
   ProductDetail?: IProductDetail[]
 }
+
+export interface IProductTransaksi {
+    Product?: IProduct
+    ProductDetail?: IProductDetail
+}
+

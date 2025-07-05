@@ -28,7 +28,7 @@ func (pc *PaymentController) Pay(c echo.Context) error {
 		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to create Invoice", err)
 	}
 
-	return helpers.SuccessResponse(c, http.StatusOK, "Success Create Invoice", url)
+	return c.Redirect(http.StatusFound, url)
 }
 
 func (pc *PaymentController) XenditCallback(c echo.Context) error {

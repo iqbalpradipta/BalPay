@@ -54,7 +54,9 @@ func (t *TransactionControllers) CreateTransaction(c echo.Context) error  {
 }
 
 func (t *TransactionControllers) GetAllTransaction(c echo.Context) error {
-	data, err := t.TransactionService.GetAllTransaction(); if err != nil {
+	var userId any = c.Get("user_id")
+	idInt := userId.(uint)
+	data, err := t.TransactionService.GetAllTransaction(idInt); if err != nil {
 		return helpers.FailedResponse(c, http.StatusInternalServerError, "Failed to get data", err)
 	}
 

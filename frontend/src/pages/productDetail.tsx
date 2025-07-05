@@ -30,7 +30,6 @@ function ProductDetail() {
     fetchData();
   }, [id]);
 
-  console.log(product);
 
   return (
     <>

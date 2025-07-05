@@ -36,7 +36,7 @@ func (s *paymentService) CreateInvoice(transactionID uint) (string, error) {
 
 	params := invoice.CreateParams{
 		ExternalID:  data.TransactionCode,
-		Amount: float64(data.ProductDetail.Price),
+		Amount: float64(data.TotalTransaction),
 		PayerEmail:  data.User.Email,
 		Description: fmt.Sprintf("Pembelian %s oleh %s", data.ProductDetail.Name, data.User.Email),
 	}

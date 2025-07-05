@@ -10,24 +10,54 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { Pagination } from "@ark-ui/react/pagination";
-
-import barang from "@/mocks/barang.json";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import api from "@/api/api";
+import { toaster } from "../ui/toaster";
+import type { TransactionDetail } from "@/interface/ITransaction";
+import { Link } from "react-router";
+import { IoReceipt } from "react-icons/io5";
 
 const pageSize = 4;
 
 function ListTransaction() {
   const [page, setPage] = useState(1);
+  const [data, setData] = useState<TransactionDetail[]>([]);
 
-  const totalItems = barang.length;
+  const totalItems = data.length;
   const totalPages = Math.ceil(totalItems / pageSize);
+  
+  const format = (price: any) => {
+    return Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/transaction`);
+        setData(response.data.data);
+      } catch (error) {
+        toaster.create({
+          title: "Invalid Input",
+          description: error,
+          type: "error",
+          closable: true,
+          duration: 5000,
+        });
+      }
+    };
+    fetchData();
+  }, []);
 
   const visibleItems = useMemo(() => {
     const startRange = (page - 1) * pageSize;
     const endRange = startRange + pageSize;
-    return barang.slice(startRange, endRange);
-  }, [page, barang, pageSize]);
+    return data.slice(startRange, endRange);
+  }, [page, data, pageSize]);
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -42,22 +72,26 @@ function ListTransaction() {
                 <Table.Column />
                 <Table.Column />
                 <Table.Column />
+                <Table.Column />
+                <Table.Column />
               </Table.ColumnGroup>
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader> </Table.ColumnHeader>
+                  <Table.ColumnHeader></Table.ColumnHeader>
                   <Table.ColumnHeader>Product Name</Table.ColumnHeader>
+                  <Table.ColumnHeader>Invoice Code</Table.ColumnHeader>
                   <Table.ColumnHeader>Status</Table.ColumnHeader>
-                  <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
+                  <Table.ColumnHeader>Price</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="end"></Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {visibleItems.map((item) => (
-                  <Table.Row key={item.id}>
+                  <Table.Row key={item.ID}>
                     <Table.Cell>
                       <Image
-                        src={item.image}
-                        alt={item.game}
+                        src={item.ProductDetail.Product?.image}
+                        alt={item.ProductDetail.Product?.name}
                         width="80px"
                         p={2}
                         ms={5}
@@ -66,13 +100,22 @@ function ListTransaction() {
                     <Table.Cell>
                       <Flex direction="column">
                         <Text fontSize="md" fontWeight="bold">
-                          {item.game}
+                          {item.ProductDetail.Product?.name}
                         </Text>
-                        <Text fontSize="small">{item.label}</Text>
+                        <Text fontSize="small">{format(item.totalTransaction)}</Text>
                       </Flex>
                     </Table.Cell>
-                    <Table.Cell>{item.status}</Table.Cell>
-                    <Table.Cell textAlign="end">{item.price}</Table.Cell>
+                    <Table.Cell>{item.transactionCode}</Table.Cell>
+                    <Table.Cell>{item.statusTransaction}</Table.Cell>
+                    <Table.Cell>{format(item.totalTransaction)}</Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <Button asChild colorPalette="blue" borderRadius="2xl">
+                        <Link to={`/invoice/${item.ID}`}>
+                          <IoReceipt />
+                          Cek Transaction
+                        </Link>
+                      </Button>
+                    </Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -93,11 +136,7 @@ function ListTransaction() {
               </Pagination.PrevTrigger>
 
               {pageNumbers.map((pageNumber) => (
-                <Pagination.Item
-                  type="page"
-                  value={pageNumber}
-                  asChild={true}
-                >
+                <Pagination.Item type="page" value={pageNumber} asChild={true}>
                   <Button variant={pageNumber === page ? "outline" : "ghost"}>
                     {pageNumber}
                   </Button>

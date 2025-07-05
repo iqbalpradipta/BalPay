@@ -10,15 +10,19 @@ import {
 } from "react-icons/io5";
 import { toaster } from "../ui/toaster";
 
-function Navbar({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const [login, _ ] = useState(!!localStorage.getItem("authToken"));
+function Navbar({
+  setLogin,
+}: {
+  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const [login, _] = useState(!!localStorage.getItem("authToken"));
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    setLogin(false)
+    setLogin(false);
 
-    navigate("/login")
+    navigate("/login");
 
     toaster.create({
       title: "Logout Berhasil!",
@@ -38,15 +42,8 @@ function Navbar({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction<bo
           pe={3}
         >
           <Flex gap="6" flexWrap="wrap" alignItems="center">
-            <Box flex="1" asChild>
-              <Link to="/">
-                <Image
-                  src="/assets/logo.png"
-                  alt="logo Balpay"
-                  w="60px"
-                  ms={5}
-                />
-              </Link>
+            <Box flex="1">
+              <Image src="/assets/logo.png" alt="logo Balpay" w="60px" ms={5} />
             </Box>
             <Box>
               <Link
@@ -55,15 +52,6 @@ function Navbar({ setLogin }: { setLogin: React.Dispatch<React.SetStateAction<bo
               >
                 <IoMdHome />
                 &nbsp;Home
-              </Link>
-            </Box>
-            <Box>
-              <Link
-                to="/topup"
-                style={{ display: "inline-flex", alignItems: "center" }}
-              >
-                <IoCartSharp />
-                &nbsp;Top Up
               </Link>
             </Box>
             <Box>

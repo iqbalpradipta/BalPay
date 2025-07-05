@@ -8,13 +8,23 @@ import {
   Portal,
   Select,
   createListCollection,
+  NumberInput,
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
 import { useState } from "react";
-import { Link } from "react-router";
 import type { IProduct } from "@/interface/IProduct";
+import { toaster } from "../ui/toaster";
+import api from "@/api/api";
+import { useNavigate } from "react-router";
 
 function ValueCard({ ProductDetail }: IProduct) {
+  const [price, setPrice] = useState("");
+  const [gameUserId, setGameUserId] = useState("");
+  const [productDetailID, setProductDetailID] = useState("");
+  const [purchaseQuantity, setPurchaseQuantity] = useState<number | "">(1);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const items = (ProductDetail ?? []).map((item) => ({
     ...item,
     value: item.ID.toString(),
@@ -22,7 +32,37 @@ function ValueCard({ ProductDetail }: IProduct) {
   }));
 
   const productDetails = createListCollection({ items });
-  const [price, setPrice] = useState("");
+  const dataProduct = { gameUserId, productDetailID, purchaseQuantity };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await api.post("/transaction", dataProduct);
+      setGameUserId("");
+      setProductDetailID("");
+      setPurchaseQuantity(1);
+      toaster.create({
+        title: "Transaksi Success",
+        description: "Transaksi Berhasil dibuat",
+        type: "success",
+        closable: true,
+        duration: 5000,
+      });
+      window.open(`http://localhost:8000/api/v1/transaction/${response.data.data.ID}/pay`, "_blank")
+      navigate(`/invoice/${response.data.data.ID}`);
+    } catch (error) {
+      console.log(error);
+      toaster.create({
+        title: "Invalid Input",
+        description: error,
+        type: "error",
+        closable: true,
+        duration: 5000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (details: any) => {
     const selectedItem = items.find(
@@ -36,6 +76,8 @@ function ValueCard({ ProductDetail }: IProduct) {
           minimumFractionDigits: 0,
         }).format(selectedItem.price)
       );
+
+      setProductDetailID(selectedItem.ID);
     }
   };
 
@@ -76,13 +118,26 @@ function ValueCard({ ProductDetail }: IProduct) {
             <Text fontSize="sm" mt={2} fontWeight="semibold" color="blue.300">
               Price
             </Text>
-            <Input placeholder="Harga" value={price} readOnly />
+            <Input
+              placeholder="Harga"
+              value={price}
+              readOnly
+              onChange={handleChange}
+            />
           </Select.Root>
 
           <Heading size="md" color="blue.500" mb={2}>
             2 Masukkan jumlah pembelian
           </Heading>
-          <Input placeholder="1" defaultValue={1} mb={6} />
+          <Input
+            placeholder="1"
+            mb={6}
+            value={purchaseQuantity}
+            onChange={(e) => {
+              const val = e.target.value;
+              setPurchaseQuantity(val === "" ? "" : parseInt(val));
+            }}
+          />
 
           <Heading size="md" color="blue.500" mb={2}>
             3 Masukkan Detail Account
@@ -90,14 +145,19 @@ function ValueCard({ ProductDetail }: IProduct) {
           <Input
             placeholder="contoh: (uid)/(server) [*Khusus untuk pembelian steam wallet, masukkan email disini]"
             mb={6}
+            value={gameUserId}
+            onChange={(e) => setGameUserId(e.target.value)}
           />
         </Box>
         <Center>
-          <Button asChild colorPalette="blue" borderRadius="2xl" width="40%">
-            <Link to="/invoice">
-              <FaShoppingCart />
-              Lanjutkan Pembayaran
-            </Link>
+          <Button
+            colorPalette="blue"
+            borderRadius="2xl"
+            width="40%"
+            onClick={handleSubmit}
+          >
+            <FaShoppingCart />
+            Lanjutkan Pembayaran
           </Button>
         </Center>
       </Box>
