@@ -10,9 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
 import type { CardProductProps } from "@/interface/ICardProduct";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const CardProduct = ({ products }: CardProductProps) => {
+  const navigate = useNavigate()
   return (
     <>
       <Box bg={"#f4f6fb"} p={5} borderRadius="md" boxShadow="lg">
@@ -41,7 +42,7 @@ const CardProduct = ({ products }: CardProductProps) => {
                   boxShadow="lg"
                   borderRadius="lg"
                 >
-                  <Link to="/productDetail">
+                  <Link to={`/productDetail/${game.ID}`}>
                     <FaShoppingCart />
                     Beli Sekarang
                   </Link>

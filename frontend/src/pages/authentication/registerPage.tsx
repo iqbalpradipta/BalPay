@@ -45,6 +45,9 @@ function RegisterPage() {
         duration: 5000,
       });
 
+      dispatch(setName(""))
+      dispatch(setEmail(""))
+      dispatch(setPassword(""))  
       navigate("/login");
     } catch (error: any) {
       if (error.status == 500) {

@@ -31,8 +31,6 @@ function LoginPage({
   const dispatch = useDispatch();
   const userData = { email: user.email, password: user.password };
 
-  console.log(user);
-
   const navigate = useNavigate();
 
   const handleLogin = async (e: SyntheticEvent) => {
@@ -50,8 +48,9 @@ function LoginPage({
       localStorage.setItem("authToken", token);
 
       setLogin(true);
+      dispatch(setEmail(""))
+      dispatch(setPassword(""))  
       navigate("/");
-
       toaster.create({
         title: "Login Berhasil!",
         description: `Selamat Datang ${user.email} :)`,
@@ -112,6 +111,11 @@ function LoginPage({
                     type="password"
                     value={user.password}
                     onChange={(e) => dispatch(setPassword(e.target.value))}
+                    onKeyDown={(e) => {
+                      if(e.key == 'Enter') {
+                        handleLogin(e)
+                      }
+                    }}
                   />
                 </Field.Root>
                 <Grid templateColumns="repeat(2, 1fr)">

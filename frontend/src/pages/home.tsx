@@ -22,7 +22,7 @@ function Home() {
   
   return (
     <>
-      <Box p={1} m={3}>
+      <Box p={1} m={3} >
         <CardProduct products={data} />
       </Box>
     </>

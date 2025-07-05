@@ -12,22 +12,31 @@ import {
 import { FaShoppingCart } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router";
+import type { IProduct } from "@/interface/IProduct";
 
-const ProductList = createListCollection({
-  items: [
-    { label: "60 Genesis Crystal", value: "60", price: "Rp. 12.100" },
-    { label: "330 Genesis Crystal", value: "330", price: "Rp. 61.300" },
-    { label: "1090 Genesis Crystal", value: "1090", price: "Rp. 184.200" },
-    { label: "2240 Genesis Crystal", value: "2240", price: "Rp. 399.500" },
-  ],
-});
+function ValueCard({ ProductDetail }: IProduct) {
+  const items = (ProductDetail ?? []).map((item) => ({
+    ...item,
+    value: item.ID.toString(),
+    label: item.name,
+  }));
 
-function ValueCard() {
+  const productDetails = createListCollection({ items });
   const [price, setPrice] = useState("");
 
   const handleChange = (details: any) => {
-    const selectedItem = details.items;
-    setPrice(selectedItem[0].price);
+    const selectedItem = items.find(
+      (item) => item.value === String(details.value)
+    );
+    if (selectedItem) {
+      setPrice(
+        Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(selectedItem.price)
+      );
+    }
   };
 
   return (
@@ -38,7 +47,7 @@ function ValueCard() {
             1 Pilih nominal
           </Heading>
           <Select.Root
-            collection={ProductList}
+            collection={productDetails}
             size="md"
             mb={4}
             onValueChange={handleChange}
@@ -55,7 +64,7 @@ function ValueCard() {
             <Portal>
               <Select.Positioner>
                 <Select.Content>
-                  {ProductList.items.map((product) => (
+                  {items?.map((product) => (
                     <Select.Item item={product} key={product.value}>
                       {product.label}
                       <Select.ItemIndicator />
@@ -78,10 +87,13 @@ function ValueCard() {
           <Heading size="md" color="blue.500" mb={2}>
             3 Masukkan Detail Account
           </Heading>
-          <Input placeholder="contoh: (uid)/(server)" mb={6} />
+          <Input
+            placeholder="contoh: (uid)/(server) [*Khusus untuk pembelian steam wallet, masukkan email disini]"
+            mb={6}
+          />
         </Box>
         <Center>
-          <Button asChild colorPalette="blue" borderRadius='2xl' width='40%'>
+          <Button asChild colorPalette="blue" borderRadius="2xl" width="40%">
             <Link to="/invoice">
               <FaShoppingCart />
               Lanjutkan Pembayaran
