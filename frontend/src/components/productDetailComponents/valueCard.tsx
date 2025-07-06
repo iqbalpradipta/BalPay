@@ -8,7 +8,6 @@ import {
   Portal,
   Select,
   createListCollection,
-  NumberInput,
 } from "@chakra-ui/react";
 import { FaShoppingCart } from "react-icons/fa";
 import { useState } from "react";
@@ -48,7 +47,10 @@ function ValueCard({ ProductDetail }: IProduct) {
         closable: true,
         duration: 5000,
       });
-      window.open(`http://localhost:8000/api/v1/transaction/${response.data.data.ID}/pay`, "_blank")
+      window.open(
+        `http://localhost:8000/api/v1/transaction/${response.data.data.ID}/pay`,
+        "_blank"
+      );
       navigate(`/invoice/${response.data.data.ID}`);
     } catch (error) {
       console.log(error);
@@ -154,6 +156,8 @@ function ValueCard({ ProductDetail }: IProduct) {
             colorPalette="blue"
             borderRadius="2xl"
             width="40%"
+            loading={loading}
+            loadingText={"Transaksi Dibuat ..."}
             onClick={handleSubmit}
           >
             <FaShoppingCart />
