@@ -1,0 +1,530 @@
+openapi: 3.0.3
+info:
+  title: BalPay API
+  version: 1.0.0
+  description: |
+    API documentation for BalPay, built with Echo (Golang) and GORM.
+
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/IQBALPRADIPTA2/BalPay/1.0.0
+  - url: http://localhost:8080/api/v1
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        transactionCode:
+          type: string
+        gameUserId:
+          type: string
+        statusTransaction:
+          type: string
+        purchaseQuantity:
+          type: number
+        totalTransaction:
+          type: number
+        userId:
+          type: integer
+        productDetailId:
+          type: integer
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+
+    ProductDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        stock:
+          type: integer
+        price:
+          type: number
+        productId:
+          type: integer
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+        external_id:
+          type: string
+        status:
+          type: string
+        payment_method:
+          type: string
+        payment_channel:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        description:
+          type: string
+        paid_at:
+          type: string
+          format: date-time
+paths:
+  /login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: "iqbal@admin.com"
+              password: "iqbal"
+      responses:
+        '200':
+          description: Successful login
+
+  /user:
+    get:
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              name: "iqbal"
+              email: "iqbal@admin.com"
+              password: "iqbal"
+              role: "user"
+      responses:
+        '201':
+          description: User created
+
+  /user/{id}:
+    get:
+      summary: Get user by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      summary: Update user by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              password: "hahaha"
+      responses:
+        '200':
+          description: User updated
+
+  /user/{email}:
+    delete:
+      summary: Delete user by email
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted
+  /transaction:
+    get:
+      summary: Get all transactions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+
+    post:
+      summary: Create new transaction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+            example:
+              transactionCode: "TR004"
+              gameUserId: "187904827298249"
+              productDetailID: 4
+      responses:
+        '201':
+          description: Transaction created
+
+  /transaction/{id}:
+    get:
+      summary: Get transaction by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transaction details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+
+    put:
+      summary: Update transaction by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+            example:
+              statusTransaction: "pending"
+      responses:
+        '200':
+          description: Transaction updated
+
+    delete:
+      summary: Delete transaction by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Transaction deleted
+
+  /product:
+    get:
+      summary: Get all products
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+    post:
+      summary: Create new product
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            example:
+              name: "Call Of Duty Mobile"
+              description: "Butuh COD Point Murah dan terpercaya ? ya di BalPay Solusinya"
+              image: "cod-call-of-duty-mobile.webp"
+      responses:
+        '201':
+          description: Product created
+
+  /product/{id}:
+    get:
+      summary: Get product by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+    put:
+      summary: Update product by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            example:
+              image: "EMELGacor.png"
+      responses:
+        '200':
+          description: Product updated
+
+    delete:
+      summary: Delete product by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Product deleted
+
+  /product_detail:
+    get:
+      summary: Get all product details
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of product details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDetail'
+
+    post:
+      summary: Create new product detail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDetail'
+            example:
+              name: "60 Genesis Crystal"
+              stock: 100
+              price: 14000
+              productId: 8
+      responses:
+        '201':
+          description: Product detail created
+
+  /product_detail/{id}:
+    get:
+      summary: Get product detail by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetail'
+
+    put:
+      summary: Update product detail by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDetail'
+            example:
+              name: "60 Genesis Crystal"
+              stock: 100
+              price: 14000
+              productId: 8
+      responses:
+        '200':
+          description: Product detail updated
+
+    delete:
+      summary: Delete product detail by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Product detail deleted
+
+  /transaction/{id}/pay:
+    get:
+      summary: Pay transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Payment URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentUrl:
+                    type: string
+                example:
+                  paymentUrl: "https://checkout-staging.xendit.co/web/64a12345678"
+
+  /webhook/xendit:
+    post:
+      summary: Xendit webhook callback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+            example:
+              id: 149330271
+              external_id: "TR004"
+              status: "PENDING"
+              payment_method: "QR_CODE"
+              payment_channel: "QRIS"
+              amount: 14000
+              currency: "IDR"
+              description: "60 Genesis Crystal"
+              paid_at: "2024-06-01T17:00:00Z"
+      responses:
+        '200':
+          description: Webhook received
