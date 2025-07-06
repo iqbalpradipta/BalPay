@@ -155,7 +155,6 @@ paths:
               name: "iqbal"
               email: "iqbal@admin.com"
               password: "iqbal"
-              role: "user"
       responses:
         '201':
           description: User created
