@@ -46,7 +46,6 @@ BalPay adalah aplikasi website untuk pembelian top-up game, voucher digital, dan
 - `Axios`
 - `Yup` (validasi)
 - `React Icons`
-- `next-themes` (opsional dark mode)
 
 ### 🔹 Backend (Golang)
 - `Echo v4`
